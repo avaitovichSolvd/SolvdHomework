@@ -8,7 +8,7 @@ class Book {
   }
 }
 
-// Тут в пример Наследования, который дополняет 
+// Тут в пример Наследования, который дополняет
 // своим свойством Жанр книги переиспользуя главный класс Книги
 class FantasyBook extends Book {
   constructor(title, author, ISBN, price, availability, genre) {
@@ -38,7 +38,8 @@ class Cart {
   }
 
   addBook(book) {
-    if (book.availability) { 
+    if (book.availability) {
+      book.availability -= 1;
       this.books.push(book);
     }
   }
@@ -66,7 +67,7 @@ class Order {
     this.totalPrice = this.calculateTotalPrice();
   }
 
-  //метод calculateTotalPrice инкапсулирован и берёт значение не из передаваемых 
+  //метод calculateTotalPrice инкапсулирован и берёт значение не из передаваемых
   // свойств, которые можн оизменить в готовом объекте, а из самого себя
   calculateTotalPrice() {
     let totalPrice = 0;
@@ -74,8 +75,7 @@ class Order {
       totalPrice += book.price;
     }
     return totalPrice;
-  };
-  
+  }
 }
 
 module.exports = {

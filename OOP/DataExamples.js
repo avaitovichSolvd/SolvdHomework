@@ -11,7 +11,7 @@ const book1 = new FantasyBook(
   "Tatsuki Fujimoto",
   "9786555127331",
   20.49,
-  true,
+  2,
   "fantasy"
 );
 const book2 = new FantasyBook(
@@ -19,7 +19,7 @@ const book2 = new FantasyBook(
   "Gege Akutami",
   "978-1974710027",
   15.99,
-  true,
+  5,
   "fantasy"
 );
 const book3 = new FantasyBook(
@@ -27,7 +27,7 @@ const book3 = new FantasyBook(
   "Naoya Matsumoto",
   "978-1974727148",
   10.35,
-  false,
+  0,
   "fantasy"
 );
 
@@ -36,7 +36,7 @@ const book4 = new NonFantasyBook(
   "NON",
   "978-2505113805",
   30.99,
-  true,
+  10,
   "tragedy"
 );
 
