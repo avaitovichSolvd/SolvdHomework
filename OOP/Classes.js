@@ -8,8 +8,6 @@ class Book {
   }
 }
 
-// Тут в пример Наследования, который дополняет
-// своим свойством Жанр книги переиспользуя главный класс Книги
 class FantasyBook extends Book {
   constructor(title, author, ISBN, price, availability, genre) {
     super(title, author, ISBN, price, availability);
@@ -47,16 +45,9 @@ class Cart {
   removeBook(isbn) {
     const index = this.books.findIndex((book) => book.ISNB === isbn);
     if (index !== -1) {
+      book.availability += 1;
       this.books.splice(index, 1);
     }
-  }
-
-  calculateTotalPrice() {
-    let totalPrice = 0;
-    for (const book of this.books) {
-      totalPrice += book.price;
-    }
-    return totalPrice;
   }
 }
 
@@ -67,8 +58,6 @@ class Order {
     this.totalPrice = this.calculateTotalPrice();
   }
 
-  //метод calculateTotalPrice инкапсулирован и берёт значение не из передаваемых
-  // свойств, которые можн оизменить в готовом объекте, а из самого себя
   calculateTotalPrice() {
     let totalPrice = 0;
     for (const book of this._books) {
