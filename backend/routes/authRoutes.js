@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const database = require("../db/DBkey");
 const bodyparser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const uuid = require('uuid');
 
 router.use(bodyparser.json());
+
+const secretKey = uuid.v4();
 
 const signUp = async (req, res) => {
   try {
@@ -30,9 +34,10 @@ const signUp = async (req, res) => {
       .query(newUser, [username, password]);
 
     if (results.affectedRows === 1) {
+      const token = jwt.sign({ username }, secretKey);
       return res
         .status(201)
-        .json({ message: "Operation to add a new user was successful" });
+        .json({ message: "Operation to add a new user was successful", token });
     } else {
       return res
         .status(500)
@@ -58,7 +63,8 @@ const signIn = async (req, res) => {
       .query(userQuery, [username, password]);
 
     if (user.length === 1) {
-      return res.status(200).json({ message: "Sign In successful" });
+      const token = jwt.sign({ username }, secretKey);
+      return res.status(200).json({ message: "Sign In successful", token });
     } else {
       return res.status(401).json({ error: "Invalid username or password" });
     }
