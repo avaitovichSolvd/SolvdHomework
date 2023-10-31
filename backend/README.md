@@ -3,15 +3,15 @@
 This document contains information on how to use the API for the legal services server.
 
 # Content
- - ## [Authorization Endpoints](#authorization-endpoints)
+   ## [Authorization Endpoints](#authorization-endpoints)
    - Sign Up
    - Sign In
    - Get Users
- - ## [User's Profile](#users-profile)
+   ## [User's Profile](#users-profile)
    - Delete User
    - Add lawyer in cart
    - Delete lawyer's card from user's cart
- - ## [Lawyer's Profile](#lawyers-profile)
+   ## [Lawyer's Profile](#lawyers-profile)
    - Add new lawyer
    - Update a lawyer profile
    - Delete lawyer profile 
