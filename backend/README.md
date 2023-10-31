@@ -3,15 +3,15 @@
 This document contains information on how to use the API for the legal services server.
 
 # Content
- - ## Authorization Endpoints
+ - ## [Authorization Endpoints](#authorization-endpoints)
    - Sign Up
    - Sign In
    - Get Users
- - ## User's Profile
+ - ## [User's Profile](#users-profile)
    - Delete User
    - Add lawyer in cart
    - Delete lawyer's card from user's cart
- - ## Lawyer's Profile
+ - ## [Lawyer's Profile](#lawyers-profile)
    - Add new lawyer
    - Update a lawyer profile
    - Delete lawyer profile 
@@ -24,7 +24,7 @@ The base URL for all API endpoints is:
 http://localhost:3000
 
 
-## [Authorization Endpoints](#authorization-endpoints)
+## Authorization Endpoints 
 
 ### 1.1. Sign Up
 
@@ -142,7 +142,7 @@ fetch(getUsersURL, {
 ```
 </br>
 
-## [User's Profile](#users-profile)
+## User's Profile
 
 
 ### 1.1. Delete User
@@ -302,7 +302,7 @@ fetch(deleteUserURL, {
 ```
 </br>
 
-## [Lawyer's Profile](#lawyers-profile)
+## Lawyer's Profile
 
 ### 1.1. Add new lawyer
 
