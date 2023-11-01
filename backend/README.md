@@ -2,23 +2,22 @@
 
 This document contains information on how to use the API for the legal services server.
 
+**Description:** Our **lawyer matching platform** is a working system designed to make it easy to find the legal professional you need, connecting clients with qualified lawyers based on the lawyer's specialty, the opinions of other clients, and your budget. The system provides brief information about specialists and helps make a choice.
+
 # Content
-   <h2><a href="#authorization-endpoints">Authorization Endpoints</a></h2>
-      
+   ## Authorization Endpoints
    - Sign Up
    - Sign In
    - Get Users
-   <h2><a href="#users-profile">User's Profile</a></h2>
-   
+   ## User's Profile
    - Delete User
    - Add lawyer in cart
    - Delete lawyer's card from user's cart
-   <h2><a href="#lawyers-profile">Lawyer's Profile</a></h2>
-   
+   ## Lawyer's Profile
    - Add new lawyer
    - Update a lawyer profile
    - Delete lawyer profile 
-   <h2><a href="#filter-and-get-a-list-of-lawyers">Filter And Get a List of Lawyers</a></h2>
+   ## Filter And Get a List of Lawyers
 </br>
 
 ### Base URL
@@ -27,7 +26,7 @@ The base URL for all API endpoints is:
 http://localhost:3000
 
 
-<h2 id="authorization-endpoints">Authorization Endpoints</h2>
+## Authorization Endpoints
 
 ### 1.1. Sign Up
 
@@ -145,7 +144,7 @@ fetch(getUsersURL, {
 ```
 </br>
 
-<h2 id="users-profile">User's Profile</h2>
+## User's Profile
 
 
 ### 1.1. Delete User
@@ -305,7 +304,7 @@ fetch(deleteUserURL, {
 ```
 </br>
 
-<h2 id="lawyers-profile">Lawyer's Profile</h2>
+## Lawyer's Profile
 
 ### 1.1. Add new lawyer
 
@@ -445,7 +444,7 @@ fetch(deleteLawyerURL, {
 </br>
 
 
-<h2 id="filter-and-get-a-list-of-lawyers">Filter And Get a List of Lawyers</h2>
+## Filter And Get a List of Lawyers
 - **URL:** `/filter/api/lawyers`
 - **URL filter:** `/filter/api/lawyers?name_of_param={param}&name_of_second_param={param2}`
 - **Method:** GET 
