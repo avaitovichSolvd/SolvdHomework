@@ -15,7 +15,7 @@ This document contains information on how to use the API for the legal services 
    - Add new lawyer
    - Update a lawyer profile
    - Delete lawyer profile 
- - ## Filter
+ - ## [Filter And Get a List of Lawyers](#filter-and-get-a-list-of-lawyers)
 </br>
 
 ### Base URL
@@ -429,6 +429,69 @@ const deleteLawyerURL = `http://localhost:3000/lawyer/api/DeleteLawyer/${lawyer_
 
 fetch(deleteLawyerURL, {
   method: 'DELETE',
+  headers: {'Content-Type': 'application/json'},
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+</br>
+
+
+## Filter And Get a List of Lawyers
+- **URL:** `/filter/api/lawyers`
+- **URL filter:** `/filter/api/lawyers?name_of_param={param}&name_of_second_param={param2}`
+- **Method:** GET 
+- **Description:** Obtaining a list of lawyers with and without filtering.
+- **Query Parameters:**
+  - `name` (string): Filter by lawyer's name.
+  - `branch_of_law` (string): Filter by the branch of law.
+  - `minRate` (number): Filter by the minimum hourly rate.
+  - `maxRate` (number): Filter by the maximum hourly rate.
+  - `exactRate` (number): Filter by the exact hourly rate.
+  - `minBudget` (number): Filter by the minimum budget.
+  - `maxBudget` (number): Filter by the maximum budget.
+  - `exactBudget` (number): Filter by the exact budget.
+  - `orderBy` (string): Sort the results by a specific field.
+- **Response:**
+- Success (HTTP 200 OK):
+  - Returns a JSON object with an array of lawyer objects that match the query parameters.
+- Error (HTTP 500 Internal Server Error):
+  - Returns a JSON object in case of a server error.
+</br>
+
+
+**Example BASIC GET**
+```javascript
+
+const getLawyersURL = `http://localhost:3000/filter/api/lawyers`;
+
+fetch(getLawyersURL, {
+  method: 'GET',
+  headers: {'Content-Type': 'application/json'},
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+</br>
+
+
+**Example FILTER GET**
+```javascript
+
+const getLawyersURL = `http://localhost:3000/filter/api/lawyers?branch_of_law=Criminal law&minRate=3&maxRate=5`;
+
+fetch(getLawyersURL, {
+  method: 'GET',
   headers: {'Content-Type': 'application/json'},
 })
   .then(response => response.json())
