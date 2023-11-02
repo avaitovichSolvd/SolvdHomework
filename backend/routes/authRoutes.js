@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const database = require("../db/DBkey");
 const bodyparser = require("body-parser");
-const jwt = require("jsonwebtoken");
-const uuid = require('uuid');
+const jwt = require("../jwt");
+const uuid = require("uuid");
 
 router.use(bodyparser.json());
 
@@ -16,6 +16,15 @@ const signUp = async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({ error: "All fields must be filled in" });
     }
+
+    const header = {
+      alg: "HS256",
+      typ: "JWT",
+    };
+
+    const payload = {
+      username: username,
+    };
 
     const checkExisting = "SELECT * FROM user WHERE username = ?";
     const [existingUsers] = await database
@@ -34,7 +43,7 @@ const signUp = async (req, res) => {
       .query(newUser, [username, password]);
 
     if (results.affectedRows === 1) {
-      const token = jwt.sign({ username }, secretKey);
+      const token = jwt(secretKey, header, payload);
       return res
         .status(201)
         .json({ message: "Operation to add a new user was successful", token });
@@ -57,13 +66,22 @@ const signIn = async (req, res) => {
       return res.status(400).json({ error: "All fields must be filled in" });
     }
 
+    const header = {
+      alg: "HS256",
+      typ: "JWT",
+    };
+
+    const payload = {
+      username: username,
+    };
+    
     const userQuery = "SELECT * FROM user WHERE username = ? AND password = ?";
     const [user] = await database
       .promise()
       .query(userQuery, [username, password]);
 
     if (user.length === 1) {
-      const token = jwt.sign({ username }, secretKey);
+      const token = jwt(secretKey, header, payload);
       return res.status(200).json({ message: "Sign In successful", token });
     } else {
       return res.status(401).json({ error: "Invalid username or password" });
