@@ -27,7 +27,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const addToCart = async (req, res) => {
+const addToFavorites = async (req, res) => {
   const { username, lawyer_id } = req.body;
 
   if (!username || !lawyer_id) {
@@ -59,7 +59,7 @@ const addToCart = async (req, res) => {
   }
 };
 
-const viewCart = async (req, res) => {
+const viewFavorites = async (req, res) => {
   const { username } = req.params;
 
   if (!username) {
@@ -84,7 +84,7 @@ const viewCart = async (req, res) => {
   }
 };
 
-const removeFromCart = async (req, res) => {
+const removeFromFavorites = async (req, res) => {
   try {
     const { username, lawyer_id } = req.body;
 
@@ -118,8 +118,8 @@ const removeFromCart = async (req, res) => {
 
 
 router.delete("/api/DeleteUser/:username", deleteUser);
-router.post("/api/AddToCart", addToCart);
-router.get("/api/ViewCart/:username", viewCart);
-router.delete("/api/RemoveFromCart", removeFromCart);
+router.post("/api/AddToFavorites", addToFavorites);
+router.get("/api/ViewFavorites/:username", viewFavorites);
+router.delete("/api/RemoveFromFavorites", removeFromFavorites);
 
 module.exports = router;

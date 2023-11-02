@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `lawyer` (
   PRIMARY KEY (`id_lawyer`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `user_cart` (
+CREATE TABLE IF NOT EXISTS `favorites` (
   `cart_id` INT AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `lawyer_id` INT NOT NULL,
@@ -28,3 +28,37 @@ CREATE TABLE IF NOT EXISTS `user_cart` (
   FOREIGN KEY (`lawyer_id`) REFERENCES `lawyer`(`id_lawyer`),
   PRIMARY KEY (`cart_id`)
 ) ENGINE = InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `calendar_events` (
+  `event_id` INT AUTO_INCREMENT,
+  `id_lawyer` INT NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `event_date` DATETIME NOT NULL,
+  `event_description` TEXT,
+  PRIMARY KEY (`event_id`),
+  FOREIGN KEY (`id_lawyer`) REFERENCES `lawyer`(`id_lawyer`),
+  FOREIGN KEY (`username`) REFERENCES `user`(`username`)
+) ENGINE = InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `chat_messages` (
+  `message_id` INT AUTO_INCREMENT,
+  `sender_id` VARCHAR(45) NOT NULL,
+  `receiver_id` INT NOT NULL,
+  `message_text` TEXT NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`message_id`),
+  FOREIGN KEY (`sender_id`) REFERENCES `user`(`username`),
+  FOREIGN KEY (`receiver_id`) REFERENCES `lawyer`(`id_lawyer`)
+) ENGINE = InnoDB;
+
+DELIMITER $$
+CREATE TRIGGER `before_insert_calendar_event` BEFORE INSERT ON `calendar_events` FOR EACH ROW
+BEGIN
+  IF NEW.event_date < NOW() THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'The event date cannot be later than the current date';
+  END IF;
+END$$
+DELIMITER ;
