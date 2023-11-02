@@ -5,21 +5,63 @@ This document contains information on how to use the API for the legal services 
 **Description:** Our **lawyer matching platform** is a working system designed to make it easy to find the legal professional you need, connecting clients with qualified lawyers based on the lawyer's specialty, the opinions of other clients, and your budget. The system provides brief information about specialists and helps make a choice.
 
 # Content
-   ## Authorization Endpoints
-   - Sign Up
-   - Sign In
-   - Get Users
-   ## User's Profile
-   - Delete User
-   - Add lawyer in cart
-   - Delete lawyer's card from user's cart
-   ## Lawyer's Profile
-   - Add new lawyer
-   - Update a lawyer profile
-   - Delete lawyer profile 
-   ## Filter And Get a List of Lawyers
+   **DB**
+   - Relationship diagram
+   - Tables
+
+
+   **Server**
+   - Authorization Endpoints
+      - Sign Up
+      - Sign In
+      - Get Users
+   - User's Profile Endpoints
+      - Delete User
+      - Add lawyer in cart
+      - Delete lawyer's card from user's cart
+   - Lawyer's Profile Endpoints 
+      - Add new lawyer
+      - Update a lawyer profile
+      - Delete lawyer profile 
+   - Filter And Get a List of Lawyers Endpoints
 </br>
 
+# DB: MySQL
+## Relationship diagram
+![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/54f86b8f-2821-49ac-a7ca-baa7cbf80385)
+</br>
+
+## Tables
+### 1. User
+Information about User
+| Key | Column name | Data type | Description |
+|------------|------------|------------|------------|
+| PK | id_user | int | Primery key for User |
+|  | username | varchar(45) | User uniq name |
+|  | password | varchar(45) | User password |
+
+### 2. Lawyer
+Information about Lawyer
+| Key | Column name | Data type | Description |
+|------------|------------|------------|------------|
+| PK | id_lawyer | int | Primery key for lawyer |
+|  | name | varchar(255) | Lawyer true name |
+|  | branch_of_law | enum | Optional: 'Criminal law', 'Labor law', 'Corporate and commercial law', 'International law', 'Healthcare and medical law' |
+|  | description | text | Description of the specialist's profile |
+|  | rate | enum | Optional rate for lawyer: '1', '2', '3', '4', '5' |
+|  | budget | decimal(10,2) | Cost of specialist services |
+
+### 3. Cart
+Information about User's CART of saved Lawyers
+| Key | Column name | Data type | Description |
+|------------|------------|------------|------------|
+| PK | cart_id | int | Primery key for User's Cart |
+| FK | username | varchar(45) | User uniq name |
+| FK | lawyer_id | INT | Lawyer ID |
+</br>
+</br>
+
+# Server: Node.js + Express.js
 ### Base URL
 
 The base URL for all API endpoints is:
@@ -45,7 +87,7 @@ http://localhost:3000
     - Returns a JSON object in case of a server error.
    
 
-**Example**
+**Usage Example**
 ```javascript
 const userData = {
   username: "exampleUser",
@@ -66,6 +108,13 @@ fetch(signUpURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "message": "Operation to add a new user was successful",
+  "token": "eyJhbGciOiJIUzI1NiI...M5x9Mh1Z-0"
+}
 ```
 </br>
 
@@ -89,7 +138,7 @@ fetch(signUpURL, {
     - Returns a JSON object in case of a server error.
 
 
-**Example**
+**Usage Example**
 ```javascript
 const userData = {
   username: "exampleUser",
@@ -111,6 +160,13 @@ fetch(signInURL, {
     ...
   });
 ```
+**Response Example**
+```javascript
+{
+  "message": "Sign In successful",,
+  "token": "eyJhbGciOiJI...M5x9Mh1Z-0"
+}
+```
 </br>
 
 ### 1.3. Get Users
@@ -125,7 +181,7 @@ fetch(signInURL, {
     - Returns a JSON object in case of a server error.
 
 
-**Example**
+**Usage Example**
 ```javascript
 
 const getUsersURL = 'http://localhost:3000/auth/api/users';
@@ -141,6 +197,23 @@ fetch(getUsersURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "users": [
+    {
+      "id_user": 1,
+      "username": "testUser",
+      "password": "test123456789"
+    },
+    {
+      "id_user": 3,
+      "username": "testUser02",
+      "password": "test123456789"
+    }
+  ]
+}
 ```
 </br>
 
@@ -165,7 +238,7 @@ fetch(getUsersURL, {
   - Returns a JSON object in case of a server error.
  
 
-**Example**
+**Usage Example**
 ```javascript
 const deleteUserURL = `http://localhost:3000/user/api/DeleteUser/${username}`;
 
@@ -180,6 +253,12 @@ fetch(deleteUserURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "message": "User deleted successfully"
+}
 ```
 </br>
 
@@ -200,7 +279,7 @@ fetch(deleteUserURL, {
    - Returns a JSON object in case of a server error.
 
 
-**Example**
+**Usage Example**
 ```javascript
 const userCartData = {
   "username": "testUser",
@@ -222,6 +301,12 @@ fetch(addToCartURL, {
     ...
   });
 ```
+**Response Example**
+```javascript
+{
+  "message": "Lawyer profile added to the cart"
+}
+```
 </br>
 
 ### 1.3. Get User's Cart
@@ -241,7 +326,7 @@ fetch(addToCartURL, {
 
 
 
-**Example**
+**Usage Example**
 ```javascript
 
 const getUserCartURL = `http://localhost:3000/user/api/ViewCart/${username}`;
@@ -257,6 +342,21 @@ fetch(getUserCartURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "cart": [
+    {
+      "id_lawyer": 1,
+      "name": "testLawyer",
+      "branch_of_law": "Criminal law",
+      "description": "Experienced (15 years) criminal defense lawyer. Protecting your interests in criminal cases.",
+      "rate": "5",
+      "budget": "5000.00"
+    }
+  ]
+}
 ```
 </br>
 
@@ -280,7 +380,7 @@ fetch(getUserCartURL, {
 
  
 
-**Example**
+**Usage Example**
 ```javascript
 const userLawyer = {
   "username": "testUser",
@@ -301,6 +401,12 @@ fetch(deleteUserURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "message": "Lawyer profile successfully removed from the cart"
+}
 ```
 </br>
 
@@ -327,7 +433,7 @@ fetch(deleteUserURL, {
 
    
 
-**Example**
+**Usage Example**
 ```javascript
 const lawyerData = {
   "name": "testLawyer02",
@@ -351,6 +457,12 @@ fetch(newLawyerURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "message": "Operation to add a new lawyer was successful"
+}
 ```
 </br>
 
@@ -379,7 +491,7 @@ fetch(newLawyerURL, {
 
    
 
-**Example**
+**Usage Example**
 ```javascript
 const lawyerData = {
   "name": "UpdateTestLawyer02",
@@ -404,6 +516,12 @@ fetch(newLawyerURL, {
     ...
   });
 ```
+**Response Example**
+```javascript
+{
+  "message": "Lawyer profile updated"
+}
+```
 </br>
 
 ### 1.3. Delete Lawyer
@@ -425,7 +543,7 @@ fetch(newLawyerURL, {
 
  
 
-**Example**
+**Usage Example**
 ```javascript
 const deleteLawyerURL = `http://localhost:3000/lawyer/api/DeleteLawyer/${lawyer_id}`;
 
@@ -440,6 +558,12 @@ fetch(deleteLawyerURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "message": "Lawyer deleted successfully"
+}
 ```
 </br>
 
@@ -467,7 +591,7 @@ fetch(deleteLawyerURL, {
 </br>
 
 
-**Example BASIC GET**
+**Usage Example BASIC GET**
 ```javascript
 
 const getLawyersURL = `http://localhost:3000/filter/api/lawyers`;
@@ -484,10 +608,41 @@ fetch(getLawyersURL, {
     ...
   });
 ```
+**Response Example**
+```javascript
+{
+  "lawyers": [
+    {
+      "id_lawyer": 1,
+      "name": "testLawyer",
+      "branch_of_law": "Criminal law",
+      "description": "...",
+      "rate": "5",
+      "budget": "6000.00"
+    },
+    {
+      "id_lawyer": 3,
+      "name": "testLawyer02",
+      "branch_of_law": "Corporate and commercial law",
+      "description": "...",
+      "rate": "3",
+      "budget": "2000.00"
+    },
+    {
+      "id_lawyer": 4,
+      "name": "testLawyer10",
+      "branch_of_law": "Labor law",
+      "description": "...",
+      "rate": "2",
+      "budget": "1000.00"
+    }
+  ]
+}
+```
 </br>
 
 
-**Example FILTER GET**
+**Usage Example FILTER GET**
 ```javascript
 
 const getLawyersURL = `http://localhost:3000/filter/api/lawyers?branch_of_law=Criminal law&minRate=3&maxRate=5`;
@@ -503,5 +658,20 @@ fetch(getLawyersURL, {
   .catch(error => {
     ...
   });
+```
+**Response Example**
+```javascript
+{
+  "lawyers": [
+    {
+      "id_lawyer": 1,
+      "name": "testLawyer",
+      "branch_of_law": "Criminal law",
+      "description": "...",
+      "rate": "5",
+      "budget": "6000.00"
+    }
+  ]
+}
 ```
 </br>
