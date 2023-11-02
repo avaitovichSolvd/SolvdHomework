@@ -24,11 +24,21 @@ This document contains information on how to use the API for the legal services 
       - Update a lawyer profile
       - Delete lawyer profile 
    - [Filter And Get a List of Lawyers Endpoints](#filter-and-get-a-list-of-lawyers)
+   - [Calendar Endpoints](#calendar-endpoints)
+       - Create Event
+       - View all events
+       - Delete event
+       - Send notification about event
+   - [Chat Endpoints](#chat-endpoints)
+       - Send message
+       - View chat
+       - Delete chat
 </br>
 
 # DB: MySQL
 ## Relationship diagram
-![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/54f86b8f-2821-49ac-a7ca-baa7cbf80385)
+![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/bbc8bf4d-4a34-41ba-a6fc-c67a81ff17a8)
+
 </br>
 
 ## Tables
@@ -51,13 +61,33 @@ Information about Lawyer
 |  | rate | enum | Optional rate for lawyer: '1', '2', '3', '4', '5' |
 |  | budget | decimal(10,2) | Cost of specialist services |
 
-### 3. Cart
-Information about User's CART of saved Lawyers
+### 3. Favorites
+Information about User's Favorites of saved Lawyers
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
-| PK | cart_id | int | Primery key for User's Cart |
+| PK | favorites_id | int | Primery key for User's Favorites |
 | FK | username | varchar(45) | User uniq name |
 | FK | lawyer_id | INT | Lawyer ID |
+
+### 4. Calendar events
+Information about Calendar events between user and lawyer
+| Key | Column name | Data type | Description |
+|------------|------------|------------|------------|
+| PK | event_id | int | Primery key for Event |
+| FK | username | varchar(45) | User uniq name |
+| FK | id_lawyer | INT | Lawyer ID |
+|  | event_date | datetime | Date and time about meet |
+|  | event_description | text | Description about meet |
+
+### 5. Chat
+Information about Chat between user and lawyer
+| Key | Column name | Data type | Description |
+|------------|------------|------------|------------|
+| PK | message_id | int | Primery key for Message |
+| FK | sender_id | varchar(45) | User uniq name |
+| FK | receiver_id | INT | Lawyer ID |
+|  | message_text | text | Message content |
+|  | timestamp | timestamp | Sending time |
 </br>
 </br>
 
@@ -680,6 +710,110 @@ fetch(getLawyersURL, {
       "budget": "6000.00"
     }
   ]
+}
+```
+</br>
+</br>
+
+[Content](#content)
+## Calendar Endpoints
+
+### 1.1. Create Event
+
+- **URL:** `/calendar/api/AddEvent`
+- **Method:** POST 
+- **Description:** Create new evnt - meeting between user and lawyer.
+- **Request Body:** JSON object with `id_lawyer`, `username`, `event_date`, `event_description` fields.
+  - `id_lawyer` (string): The lawyer ID.
+  - `username` (string): Uniq user name.
+  - `event_date` ()
+- **Response:**
+  - Success (HTTP 201 Created):
+    - Returns a JSON object with a success message and an access token.
+  - Error (HTTP 400 Bad Request):
+    - Returns a JSON object with an error message if the request is missing fields or if the username already exists.
+  - Error (HTTP 500 Internal Server Error):
+    - Returns a JSON object in case of a server error.
+   
+
+**Usage Example**
+```javascript
+const userData = {
+  username: "exampleUser",
+  password: "password123"
+};
+
+const signUpURL = 'http://localhost:3000/auth/api/SignUp';
+
+fetch(signUpURL, {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(userData)
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Operation to add a new user was successful",
+  "token": "eyJhbGciOiJIUzI1NiI...M5x9Mh1Z-0"
+}
+```
+</br>
+
+
+### 1.2. Sign In
+
+- **URL:** `/auth/api/SignIn`
+- **Method:** POST 
+- **Description:** Authenticate an existing user.
+- **Request Body:** JSON object with `username` and `password` fields.
+  - `username` (string): The username of the user.
+  - `password` (string): The password of the user.
+- **Response:**
+  - Success (HTTP 200 OK):
+    - Returns a JSON object with a success message and an access token upon successful authentication.
+  - Error (HTTP 400 Bad Request):
+    - Returns a JSON object with an error message if the request is missing fields.
+  - Error (HTTP 401 Unauthorized):
+    - Returns a JSON object with an error message if the username or password is invalid.
+  - Error (HTTP 500 Internal Server Error):
+    - Returns a JSON object in case of a server error.
+
+
+**Usage Example**
+```javascript
+const userData = {
+  username: "exampleUser",
+  password: "password123"
+};
+
+const signInURL = 'http://localhost:3000/auth/api/SignIn';
+
+fetch(signInURL, {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(userData)
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Sign In successful",,
+  "token": "eyJhbGciOiJI...M5x9Mh1Z-0"
 }
 ```
 </br>
