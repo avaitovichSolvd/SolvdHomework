@@ -17,8 +17,8 @@ This document contains information on how to use the API for the legal services 
       - Get Users
    - [User's Profile Endpoints](#users-profile)
       - Delete User
-      - Add lawyer in cart
-      - Delete lawyer's card from user's cart
+      - Add lawyer in favorites
+      - Delete lawyer's card from user's favorites
    - [Lawyer's Profile Endpoints](#lawyers-profile)
       - Add new lawyer
       - Update a lawyer profile
@@ -297,11 +297,11 @@ fetch(deleteUserURL, {
 ```
 </br>
 
-### 1.2. Add lawyer in cart
+### 1.2. Add lawyer in favorites
 
-- **URL:** `/user/api/AddToCart`
+- **URL:** `/user/api/AddToFavorites`
 - **Method:** POST 
-- **Description:** Save lawyer's profile in user's cart.
+- **Description:** Save lawyer's profile in user's favorites.
 - **Request Body:** JSON object with `username` and `lawyer_id` fields.
   - `username` (string): The username of the user.
   - `lawyer_id` (string): The id of the lawyer.
@@ -316,17 +316,17 @@ fetch(deleteUserURL, {
 
 **Usage Example**
 ```javascript
-const userCartData = {
+const userFavoritesData = {
   "username": "testUser",
   "lawyer_id": 2
 };
 
-const addToCartURL = 'http://localhost:3000/user/api/AddToCart';
+const addToFavoritesURL = 'http://localhost:3000/user/api/AddToFavorites';
 
-fetch(addToCartURL, {
+fetch(addToFavoritesURL, {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(userCartData)
+  body: JSON.stringify(userFavoritesData)
 })
   .then(response => response.json())
   .then(data => {
@@ -339,23 +339,23 @@ fetch(addToCartURL, {
 **Response Example**
 ```javascript
 {
-  "message": "Lawyer profile added to the cart"
+  "message": "Lawyer profile added to the favorites"
 }
 ```
 </br>
 
-### 1.3. Get User's Cart
+### 1.3. Get User's Favorites
 
-- **URL:** `/user/api/ViewCart/{username}`
+- **URL:** `/user/api/ViewFavorites/{username}`
 - **Method:** GET 
-- **Description:** Retrieve a list of saved items in user's cart.
+- **Description:** Retrieve a list of saved items in user's favorites.
 - **Response:**
  - Success (HTTP 200 OK):
-   - Returns a JSON object with the cart items when the request is successful.
+   - Returns a JSON object with the favorites items when the request is successful.
  - Error (HTTP 400 Bad Request):
    - Returns a JSON object with an error message if the `username` parameter is missing.
  - Error (HTTP 404 Not Found):
-   - Returns a JSON object with a message indicating that the cart is empty when no items are found.
+   - Returns a JSON object with a message indicating that the favorites is empty when no items are found.
  - Error (HTTP 500 Internal Server Error):
    - Returns a JSON object in case of a server error.
 
@@ -364,9 +364,9 @@ fetch(addToCartURL, {
 **Usage Example**
 ```javascript
 
-const getUserCartURL = `http://localhost:3000/user/api/ViewCart/${username}`;
+const getUserFavoritesURL = `http://localhost:3000/user/api/ViewFavorites/${username}`;
 
-fetch(getUserCartURL, {
+fetch(getUserFavoritesURL, {
   method: 'GET',
   headers: {'Content-Type': 'application/json'},
 })
@@ -381,7 +381,7 @@ fetch(getUserCartURL, {
 **Response Example**
 ```javascript
 {
-  "cart": [
+  "favorites": [
     {
       "id_lawyer": 1,
       "name": "testLawyer",
@@ -395,9 +395,9 @@ fetch(getUserCartURL, {
 ```
 </br>
 
-### 1.4. Delete lawyer's card from user's cart
+### 1.4. Delete lawyer's card from user's favorites
 
-- **URL:** `/user/api/RemoveFromCart`
+- **URL:** `/user/api/RemoveFromFavorites`
 - **Method:** DELETE 
 - **Description:** Removes the saved lawyer profile from the user's list.
 - **Request Body:** JSON object with `username` and `lawyer_id` fields.
@@ -405,11 +405,11 @@ fetch(getUserCartURL, {
   - `lawyer_id` (string): The id of the lawyer.
 - **Response:**
 - Success (HTTP 200 OK):
-  - Returns a JSON object with a success message indicating the lawyer profile was successfully removed from the cart.
+  - Returns a JSON object with a success message indicating the lawyer profile was successfully removed from the favorites.
 - Error (HTTP 400 Bad Request):
   - Returns a JSON object with an error message if the `username` and `lawyer_id` parameters are missing.
 - Error (HTTP 404 Not Found):
-  - Returns a JSON object with an error message if the specified lawyer profile was not found in the cart.
+  - Returns a JSON object with an error message if the specified lawyer profile was not found in the favorites.
 - Error (HTTP 500 Internal Server Error):
   - Returns a JSON object in case of a server error.
 
@@ -422,7 +422,7 @@ const userLawyer = {
   "lawyer_id": 2
 }
 
-const deleteUserURL = `http://localhost:3000/user/api/RemoveFromCart`;
+const deleteUserURL = `http://localhost:3000/user/api/RemoveFromFavorites`;
 
 fetch(deleteUserURL, {
   method: 'DELETE',
@@ -440,7 +440,7 @@ fetch(deleteUserURL, {
 **Response Example**
 ```javascript
 {
-  "message": "Lawyer profile successfully removed from the cart"
+  "message": "Lawyer profile successfully removed from the favorites"
 }
 ```
 </br>
@@ -726,29 +726,30 @@ fetch(getLawyersURL, {
 - **Request Body:** JSON object with `id_lawyer`, `username`, `event_date`, `event_description` fields.
   - `id_lawyer` (string): The lawyer ID.
   - `username` (string): Uniq user name.
-  - `event_date` ()
+  - `event_date` (datetime): Date and time about meet.
+  - `event_description` (string): Description about meet.
 - **Response:**
   - Success (HTTP 201 Created):
-    - Returns a JSON object with a success message and an access token.
-  - Error (HTTP 400 Bad Request):
-    - Returns a JSON object with an error message if the request is missing fields or if the username already exists.
+    - Returns a JSON object with a success message.
   - Error (HTTP 500 Internal Server Error):
     - Returns a JSON object in case of a server error.
    
 
 **Usage Example**
 ```javascript
-const userData = {
-  username: "exampleUser",
-  password: "password123"
-};
+const eventData = {
+  "id_lawyer": 1,
+  "username": "testUser",
+  "event_date": "2023-11-12 16:00:00",
+  "event_description": "Meeting with the client"
+}
 
-const signUpURL = 'http://localhost:3000/auth/api/SignUp';
+const addEventURL = 'http://localhost:3000/calendar/api/AddEvent'
 
-fetch(signUpURL, {
+fetch(addEventURL, {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(userData)
+  body: JSON.stringify(eventData)
 })
   .then(response => response.json())
   .then(data => {
@@ -761,45 +762,34 @@ fetch(signUpURL, {
 **Response Example**
 ```javascript
 {
-  "message": "Operation to add a new user was successful",
-  "token": "eyJhbGciOiJIUzI1NiI...M5x9Mh1Z-0"
+  "message": "Event created successfully"
 }
 ```
 </br>
 
 
-### 1.2. Sign In
+### 1.2. View all events
 
-- **URL:** `/auth/api/SignIn`
-- **Method:** POST 
-- **Description:** Authenticate an existing user.
-- **Request Body:** JSON object with `username` and `password` fields.
-  - `username` (string): The username of the user.
-  - `password` (string): The password of the user.
+- **URL:** `/calendar/api/GetEventList?id_lawyer={id_lawyer}&username={username}`
+- **Method:** GET 
+- **Description:** Get all created events.
+- **Query Parameters:**
+  - `id_lawyer` (string): The lawyer ID.
+  - `username` (string): Uniq user name.
 - **Response:**
-  - Success (HTTP 200 OK):
-    - Returns a JSON object with a success message and an access token upon successful authentication.
-  - Error (HTTP 400 Bad Request):
-    - Returns a JSON object with an error message if the request is missing fields.
-  - Error (HTTP 401 Unauthorized):
-    - Returns a JSON object with an error message if the username or password is invalid.
+  - Success (HTTP 200 Created):
+    - Returns a JSON object with a success message and list of events between lawyer and user.
   - Error (HTTP 500 Internal Server Error):
     - Returns a JSON object in case of a server error.
-
+   
 
 **Usage Example**
 ```javascript
-const userData = {
-  username: "exampleUser",
-  password: "password123"
-};
+const viewEventListURL = 'http://localhost:3000/calendar/api/GetEventList?id_lawyer=1&username=testUser'
 
-const signInURL = 'http://localhost:3000/auth/api/SignIn';
-
-fetch(signInURL, {
-  method: 'POST',
+fetch(viewEventListURL, {
+  method: 'GET',
   headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(userData)
 })
   .then(response => response.json())
   .then(data => {
@@ -812,8 +802,254 @@ fetch(signInURL, {
 **Response Example**
 ```javascript
 {
-  "message": "Sign In successful",,
-  "token": "eyJhbGciOiJI...M5x9Mh1Z-0"
+  "events": [
+    {
+      "event_id": 1,
+      "id_lawyer": 1,
+      "username": "testUser",
+      "event_date": "2023-11-12T15:00:00.000Z",
+      "event_description": "Meeting with the client"
+    },
+    {
+      "event_id": 3,
+      "id_lawyer": 1,
+      "username": "testUser",
+      "event_date": "2023-11-15T15:00:00.000Z",
+      "event_description": "Meeting with the client"
+    }
+  ]
+}
+```
+</br>
+
+### 1.3. Delete event
+
+- **URL:** `/calendar/api/DeleteEvent/{event_id}`
+- **Method:** DELETE 
+- **Description:** Delete meeting.
+- **URL Parameters:**
+  - `event_id` (num, required): The event_id of the meet to be deleted.
+- **Response:**
+- Success (HTTP 200 OK):
+  - Returns a JSON object with a success message indicating that the meet was successfully deleted.
+- Error (HTTP 404 Not Found):
+  - Returns a JSON object with an error message if the specified meet was not found.
+- Error (HTTP 500 Internal Server Error):
+  - Returns a JSON object in case of a server error.
+
+ 
+
+**Usage Example**
+```javascript
+const deleteLawyerURL = `http://localhost:3000/calendar/api/DeleteEvent/3`;
+
+fetch(deleteLawyerURL, {
+  method: 'DELETE',
+  headers: {'Content-Type': 'application/json'},
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Event deleted successfully"
+}
+```
+</br>
+
+### 1.4. Send notification about event
+
+- **URL:** `/calendar/api/EventNotificationToChat`
+- **Method:** POST 
+- **Description:** Send notification in chat about meeting between user and lawyer.
+- **Request Body:** JSON object with `sender_id`, `receiver_id`, `event_id` fields.
+  - `receiver_id` (string): The lawyer ID.
+  - `sender_id` (string): Uniq user name.
+  - `event_id` (datetime): Uniq event ID.
+- **Response:**
+  - Success (HTTP 201 Created):
+    - Returns a JSON object with a success message.
+  - Error (HTTP 404 Not Found):
+    - Returns a JSON object with an error message if the specified event was not found.
+  - Error (HTTP 500 Internal Server Error):
+    - Returns a JSON object in case of a server error.
+   
+
+**Usage Example**
+```javascript
+const eventNoteData = { "sender_id": "testUser", "receiver_id": "1", "event_id": "1" }
+
+const addEventURL = 'http://localhost:3000/calendar/api/EventNotificationToChat'
+
+fetch(addEventURL, {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(eventNoteData)
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Event created successfully"
+}
+```
+</br>
+</br>
+
+[Content](#content)
+## Chat Endpoints
+
+### 1.1. Send message
+
+- **URL:** `/chat/api/SendMessage`
+- **Method:** POST 
+- **Description:** Sending message from user to lawyer.
+- **Request Body:** JSON object with `sender_id`, `receiver_id`, `message_text` fields.
+  - `receiver_id` (string): The lawyer ID.
+  - `sender_id` (string): Uniq user name.
+  - `message_text` (string): Content in message.
+- **Response:**
+  - Success (HTTP 201 Created):
+    - Returns a JSON object with a success message.
+  - Error (HTTP 500 Internal Server Error):
+    - Returns a JSON object in case of a server error.
+   
+
+**Usage Example**
+```javascript
+const messageData = {
+"sender_id": "testUser",
+"receiver_id": "1",
+"message_text": "How are you?"
+}
+
+const sendingMessageURL = 'http://localhost:3000/chat/api/SendMessage'
+
+fetch(sendingMessageURL, {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(messageData)
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Message sent successfully"
+}
+```
+</br>
+
+
+### 1.2. View chat
+
+- **URL:** `/chat/api/GetChatMessages?sender_id={sender_id}&receiver_id={receiver_id}`
+- **Method:** GET 
+- **Description:** Get chat history.
+- **Query Parameters:**
+  - `receiver_id` (string): The lawyer ID.
+  - `sender_id` (string): Uniq user name.
+- **Response:**
+  - Success (HTTP 200 Created):
+    - Returns a JSON object with a success message and list of events between lawyer and user.
+  - Error (HTTP 500 Internal Server Error):
+    - Returns a JSON object in case of a server error.
+   
+
+**Usage Example**
+```javascript
+const viewChatURL = 'http://localhost:3000/chat/api/GetChatMessages?sender_id=testUser&receiver_id=1'
+
+fetch(viewChatURL, {
+  method: 'GET',
+  headers: {'Content-Type': 'application/json'},
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "messages": [
+    {
+      "message_id": 1,
+      "sender_id": "testUser",
+      "receiver_id": 1,
+      "message_text": "Hi. I need your consultation",
+      "timestamp": "2023-11-02T15:27:23.000Z"
+    },
+    {
+      "message_id": 2,
+      "sender_id": "testUser",
+      "receiver_id": 1,
+      "message_text": "How are you?",
+      "timestamp": "2023-11-02T15:27:39.000Z"
+    }
+  ]
+}
+```
+</br>
+
+### 1.3. Delete chat
+
+- **URL:** `/chat/api/DeleteChat?sender_id={sender_id}&receiver_id={receiver_id}`
+- **Method:** DELETE 
+- **Description:** Delete meeting.
+- **Query Parameters:**
+  - `receiver_id` (string): The lawyer ID.
+  - `sender_id` (string): Uniq user name.
+- **Response:**
+- Success (HTTP 200 OK):
+  - Returns a JSON object with a success message indicating that the meet was successfully deleted.
+- Error (HTTP 500 Internal Server Error):
+  - Returns a JSON object in case of a server error.
+
+ 
+
+**Usage Example**
+```javascript
+const deleteChatURL = `http://localhost:3000/chat/api/DeleteChat?sender_id=testUser&receiver_id=1`;
+
+fetch(deleteChatURL, {
+  method: 'DELETE',
+  headers: {'Content-Type': 'application/json'},
+})
+  .then(response => response.json())
+  .then(data => {
+    ...
+  })
+  .catch(error => {
+    ...
+  });
+```
+**Response Example**
+```javascript
+{
+  "message": "Chat deleted successfully"
 }
 ```
 </br>
