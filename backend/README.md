@@ -6,24 +6,24 @@ This document contains information on how to use the API for the legal services 
 
 # Content
    **DB**
-   - Relationship diagram
-   - Tables
+   - [Relationship diagram](#relationship-diagram)
+   - [Tables](#tables)
 
 
    **Server**
-   - Authorization Endpoints
+   - [Authorization Endpoints](#authorization-endpoints)
       - Sign Up
       - Sign In
       - Get Users
-   - User's Profile Endpoints
+   - [User's Profile Endpoints](#users-profile)
       - Delete User
       - Add lawyer in cart
       - Delete lawyer's card from user's cart
-   - Lawyer's Profile Endpoints 
+   - [Lawyer's Profile Endpoints](#lawyers-profile)
       - Add new lawyer
       - Update a lawyer profile
       - Delete lawyer profile 
-   - Filter And Get a List of Lawyers Endpoints
+   - [Filter And Get a List of Lawyers Endpoints](#filter-and-get-a-list-of-lawyers)
 </br>
 
 # DB: MySQL
@@ -61,13 +61,16 @@ Information about User's CART of saved Lawyers
 </br>
 </br>
 
+
 # Server: Node.js + Express.js
 ### Base URL
 
 The base URL for all API endpoints is:
 http://localhost:3000
 
+</br>
 
+[Content](#content)
 ## Authorization Endpoints
 
 ### 1.1. Sign Up
@@ -216,7 +219,9 @@ fetch(getUsersURL, {
 }
 ```
 </br>
+</br>
 
+[Content](#content)
 ## User's Profile
 
 
@@ -409,7 +414,9 @@ fetch(deleteUserURL, {
 }
 ```
 </br>
+</br>
 
+[Content](#content)
 ## Lawyer's Profile
 
 ### 1.1. Add new lawyer
@@ -566,8 +573,9 @@ fetch(deleteLawyerURL, {
 }
 ```
 </br>
+</br>
 
-
+[Content](#content)
 ## Filter And Get a List of Lawyers
 - **URL:** `/filter/api/lawyers`
 - **URL filter:** `/filter/api/lawyers?name_of_param={param}&name_of_second_param={param2}`
