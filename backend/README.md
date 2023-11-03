@@ -37,7 +37,8 @@ This document contains information on how to use the API for the legal services 
 
 # DB: MySQL
 ## Relationship diagram
-![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/bbc8bf4d-4a34-41ba-a6fc-c67a81ff17a8)
+![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/6acdedc2-64e2-404a-9f49-56ad51c20d50)
+
 
 </br>
 
@@ -84,9 +85,10 @@ Information about Chat between user and lawyer
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
 | PK | message_id | int | Primery key for Message |
-| FK | sender_id | varchar(45) | User uniq name |
-| FK | receiver_id | INT | Lawyer ID |
+| FK | user_chat | varchar(45) | User uniq name |
+| FK | lawyer_chat | INT | Lawyer ID |
 |  | message_text | text | Message content |
+|  | sender_type | enum | Optional based of sender role: 'user', 'lawyer' |
 |  | timestamp | timestamp | Sending time |
 </br>
 </br>
@@ -868,10 +870,11 @@ fetch(deleteLawyerURL, {
 - **URL:** `/calendar/api/EventNotificationToChat`
 - **Method:** POST 
 - **Description:** Send notification in chat about meeting between user and lawyer.
-- **Request Body:** JSON object with `sender_id`, `receiver_id`, `event_id` fields.
-  - `receiver_id` (string): The lawyer ID.
-  - `sender_id` (string): Uniq user name.
+- **Request Body:** JSON object with `user_chat`, `lawyer_chat`, `event_id` fields.
+  - `lawyer_chat` (string): The lawyer ID.
+  - `user_chat` (string): Uniq user name.
   - `event_id` (datetime): Uniq event ID.
+  - `sender_type` (string): Optional role of sender: "user" or "lawyer".
 - **Response:**
   - Success (HTTP 201 Created):
     - Returns a JSON object with a success message.
@@ -883,11 +886,11 @@ fetch(deleteLawyerURL, {
 
 **Usage Example**
 ```javascript
-const eventNoteData = { "sender_id": "testUser", "receiver_id": "1", "event_id": "1" }
+const eventNoteData = { "user_chat": "testUser", "lawyer_chat": "1", "event_id": "1", "sender_type": "user" }
 
-const addEventURL = 'http://localhost:3000/calendar/api/EventNotificationToChat'
+const sendEventNotificationURL = 'http://localhost:3000/calendar/api/EventNotificationToChat'
 
-fetch(addEventURL, {
+fetch(sendEventNotificationURL, {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify(eventNoteData)
@@ -903,7 +906,7 @@ fetch(addEventURL, {
 **Response Example**
 ```javascript
 {
-  "message": "Event created successfully"
+  "message": "Event details sent to chat successfully"
 }
 ```
 </br>
@@ -917,10 +920,11 @@ fetch(addEventURL, {
 - **URL:** `/chat/api/SendMessage`
 - **Method:** POST 
 - **Description:** Sending message from user to lawyer.
-- **Request Body:** JSON object with `sender_id`, `receiver_id`, `message_text` fields.
-  - `receiver_id` (string): The lawyer ID.
-  - `sender_id` (string): Uniq user name.
+- **Request Body:** JSON object with `user_chat`, `lawyer_chat`, `message_text` fields.
+  - `lawyer_chat` (string): The lawyer ID.
+  - `user_chat` (string): Uniq user name.
   - `message_text` (string): Content in message.
+  - `sender_type` (string): Optional role of sender: "user" or "lawyer".
 - **Response:**
   - Success (HTTP 201 Created):
     - Returns a JSON object with a success message.
@@ -931,9 +935,10 @@ fetch(addEventURL, {
 **Usage Example**
 ```javascript
 const messageData = {
-"sender_id": "testUser",
-"receiver_id": "1",
-"message_text": "How are you?"
+"user_chat": "testUser",
+"lawyer_chat": "1",
+"message_text": "How are you?",
+"sender_type": "lawyer"
 }
 
 const sendingMessageURL = 'http://localhost:3000/chat/api/SendMessage'
@@ -962,12 +967,12 @@ fetch(sendingMessageURL, {
 
 ### 1.2. View chat
 
-- **URL:** `/chat/api/GetChatMessages?sender_id={sender_id}&receiver_id={receiver_id}`
+- **URL:** `/chat/api/GetChatMessages?user_chat={user_chat}&lawyer_chat={lawyer_chat}`
 - **Method:** GET 
 - **Description:** Get chat history.
 - **Query Parameters:**
-  - `receiver_id` (string): The lawyer ID.
-  - `sender_id` (string): Uniq user name.
+  - `lawyer_chat` (string): The lawyer ID.
+  - `user_chat` (string): Uniq user name.
 - **Response:**
   - Success (HTTP 200 Created):
     - Returns a JSON object with a success message and list of events between lawyer and user.
@@ -977,7 +982,7 @@ fetch(sendingMessageURL, {
 
 **Usage Example**
 ```javascript
-const viewChatURL = 'http://localhost:3000/chat/api/GetChatMessages?sender_id=testUser&receiver_id=1'
+const viewChatURL = 'http://localhost:3000/chat/api/GetChatMessages?user_chat=testUser&lawyer_chat=1'
 
 fetch(viewChatURL, {
   method: 'GET',
@@ -997,17 +1002,19 @@ fetch(viewChatURL, {
   "messages": [
     {
       "message_id": 1,
-      "sender_id": "testUser",
-      "receiver_id": 1,
-      "message_text": "Hi. I need your consultation",
-      "timestamp": "2023-11-02T15:27:23.000Z"
+      "user_chat": "testUser",
+      "lawyer_chat": 1,
+      "message_text": "{\"date\":\"2023-11-12T15:00:00.000Z\",\"description\":\"Meeting with the client\",\"lawyer\":1,\"client\":\"testUser\"}",
+      "sender_type": "user",
+      "timestamp": "2023-11-03T00:05:33.000Z"
     },
     {
       "message_id": 2,
-      "sender_id": "testUser",
-      "receiver_id": 1,
+      "user_chat": "testUser",
+      "lawyer_chat": 1,
       "message_text": "How are you?",
-      "timestamp": "2023-11-02T15:27:39.000Z"
+      "sender_type": "lawyer",
+      "timestamp": "2023-11-03T00:07:20.000Z"
     }
   ]
 }
@@ -1016,12 +1023,12 @@ fetch(viewChatURL, {
 
 ### 1.3. Delete chat
 
-- **URL:** `/chat/api/DeleteChat?sender_id={sender_id}&receiver_id={receiver_id}`
+- **URL:** `/chat/api/DeleteChat?user_chat={user_chat}&lawyer_chat={lawyer_chat}`
 - **Method:** DELETE 
 - **Description:** Delete meeting.
 - **Query Parameters:**
-  - `receiver_id` (string): The lawyer ID.
-  - `sender_id` (string): Uniq user name.
+  - `lawyer_chat` (string): The lawyer ID.
+  - `user_chat` (string): Uniq user name.
 - **Response:**
 - Success (HTTP 200 OK):
   - Returns a JSON object with a success message indicating that the meet was successfully deleted.
@@ -1032,7 +1039,7 @@ fetch(viewChatURL, {
 
 **Usage Example**
 ```javascript
-const deleteChatURL = `http://localhost:3000/chat/api/DeleteChat?sender_id=testUser&receiver_id=1`;
+const deleteChatURL = `http://localhost:3000/chat/api/DeleteChat?user_chat=testUser&lawyer_chat=1`;
 
 fetch(deleteChatURL, {
   method: 'DELETE',
