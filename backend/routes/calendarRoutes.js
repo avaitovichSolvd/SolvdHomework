@@ -81,7 +81,7 @@ const deleteEvent = async (req, res) => {
 
 const eventNotification = async (req, res) => {
   try {
-    const { sender_id, receiver_id, event_id } = req.body;
+    const { user_chat, lawyer_chat, event_id, sender_type } = req.body;
 
     const findEventSql =
       "SELECT event_date, event_description, id_lawyer, username FROM calendar_events WHERE event_id = ?";
@@ -103,8 +103,8 @@ const eventNotification = async (req, res) => {
     };
     const message_text = JSON.stringify(eventDetailsObject);
     const insertMessageSql =
-      "INSERT INTO chat_messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)";
-    const values = [sender_id, receiver_id, message_text];
+      "INSERT INTO chat_messages (user_chat, lawyer_chat, message_text, sender_type) VALUES (?, ?, ?, ?)";
+    const values = [user_chat, lawyer_chat, message_text, sender_type];
 
     const [result] = await database.promise().query(insertMessageSql, values);
 

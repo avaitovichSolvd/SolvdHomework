@@ -44,14 +44,17 @@ CREATE TABLE IF NOT EXISTS `calendar_events` (
 
 CREATE TABLE IF NOT EXISTS `chat_messages` (
   `message_id` INT AUTO_INCREMENT,
-  `sender_id` VARCHAR(45) NOT NULL,
-  `receiver_id` INT NOT NULL,
+  `user_chat` VARCHAR(45) NOT NULL,
+  `lawyer_chat` INT NOT NULL,
   `message_text` TEXT NOT NULL,
+  `sender_type` ENUM('user', 'lawyer') NOT NULL,
   `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`message_id`),
-  FOREIGN KEY (`sender_id`) REFERENCES `user`(`username`),
-  FOREIGN KEY (`receiver_id`) REFERENCES `lawyer`(`id_lawyer`)
+  FOREIGN KEY (`user_chat`) REFERENCES `user`(`username`),
+  FOREIGN KEY (`lawyer_chat`) REFERENCES `lawyer`(`id_lawyer`)
 ) ENGINE = InnoDB;
+
+
 
 DELIMITER $$
 CREATE TRIGGER `before_insert_calendar_event` BEFORE INSERT ON `calendar_events` FOR EACH ROW

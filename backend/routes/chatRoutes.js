@@ -7,11 +7,11 @@ router.use(bodyparser.json());
 
 const sendMessages = async (req, res) => {
   try {
-    const { sender_id, receiver_id, message_text } = req.body;
+    const { user_chat, lawyer_chat, message_text, sender_type } = req.body;
 
     const sql =
-      "INSERT INTO chat_messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)";
-    const values = [sender_id, receiver_id, message_text];
+      "INSERT INTO chat_messages (user_chat, lawyer_chat, message_text, sender_type) VALUES (?, ?, ?, ?)";
+    const values = [user_chat, lawyer_chat, message_text, sender_type];
 
     const [result] = await database.promise().query(sql, values);
 
@@ -24,11 +24,11 @@ const sendMessages = async (req, res) => {
 
 const getChat = async (req, res) => {
   try {
-    const { sender_id, receiver_id } = req.query;
+    const { user_chat, lawyer_chat } = req.query;
 
     const sql =
-      "SELECT * FROM chat_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY timestamp";
-    const values = [sender_id, receiver_id, receiver_id, sender_id];
+      "SELECT * FROM chat_messages WHERE (user_chat = ? AND lawyer_chat = ?) OR (user_chat = ? AND lawyer_chat = ?) ORDER BY timestamp";
+    const values = [user_chat, lawyer_chat, lawyer_chat, user_chat];
 
     const [messages] = await database.promise().query(sql, values);
 
@@ -41,11 +41,11 @@ const getChat = async (req, res) => {
 
 const deleteChat = async (req, res) => {
   try {
-    const { sender_id, receiver_id } = req.query;
+    const { user_chat, lawyer_chat } = req.query;
 
     const sql =
-      "DELETE FROM chat_messages WHERE (sender_id = ? AND receiver_id = ?)";
-    const values = [sender_id, receiver_id, receiver_id, sender_id];
+      "DELETE FROM chat_messages WHERE (user_chat = ? AND lawyer_chat = ?)";
+    const values = [user_chat, lawyer_chat, lawyer_chat, user_chat];
 
     const [result] = await database.promise().query(sql, values);
 
