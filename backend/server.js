@@ -3,7 +3,6 @@ const app = express();
 const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const lawyerRoutes = require("./src/routes/lawyerRoutes");
-const filterRoutes = require("./src/routes/filterRoutes");
 const calendarRoutes = require("./src/routes/calendarRoutes")
 const chatRouters = require("./src/routes/chatRoutes")
 
@@ -22,9 +21,6 @@ app.use("/lawyers", lawyerRoutes);
 // http://localhost:3000/lawyer/api/AddLawyer POST new
 // http://localhost:3000/lawyer/api/UpdateLawyer/:id_lawyer PUT new lawyer
 // http://localhost:3000/lawyer/api/DeleteLawyer/:id_lawyer DELETE lawyer
-
-app.use("/filter", filterRoutes);
-// http://localhost:3000/filter/api/lawyers GET list lawyer with filter
 
 app.use("/calendar", calendarRoutes)
 // http://localhost:3000/calendar/api/AddEvent POST create calendar event

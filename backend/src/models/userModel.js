@@ -11,10 +11,10 @@ const userModel = {
     }
   },
 
-  deleteUser: async (id) => {
-    const sql = "DELETE FROM user WHERE id = ?";
+  deleteUser: async (user_id) => {
+    const sql = "DELETE FROM user WHERE user_id = ?";
 
-    const values = [id];
+    const values = [user_id];
 
     try {
       const [result] = await database.promise().query(sql, values);
@@ -38,7 +38,7 @@ const userModel = {
 
   getFavoritesList: async (user_id) => {
     const sql =
-      "SELECT l.id, l.first_name, l.last_name, l.phone_number, l.email, l.branch_of_law, l.description, l.rate, l.budget FROM favorites uc JOIN lawyer l ON uc.lawyer_id = l.id WHERE uc.user_id = ?";
+      "SELECT l.lawyer_id, l.first_name, l.last_name, l.phone_number, l.email, l.branch_of_law, l.description, l.rate, l.budget FROM favorites uc JOIN lawyer l ON uc.lawyer_id = l.lawyer_id WHERE uc.user_id = ?";
     const values = [user_id];
 
     try {

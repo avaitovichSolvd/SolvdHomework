@@ -14,10 +14,11 @@ This document contains information on how to use the API for the legal services 
    - [Authorization Endpoints](#authorization-endpoints)
       - Sign Up
       - Sign In
-      - Get Users
    - [User's Profile Endpoints](#users-profile)
+      - Get Users
       - Delete User
       - Add lawyer in favorites
+      - Get User's Favorites
       - Delete lawyer's card from user's favorites
    - [Lawyer's Profile Endpoints](#lawyers-profile)
       - Add new lawyer
@@ -37,7 +38,7 @@ This document contains information on how to use the API for the legal services 
 
 # DB: MySQL
 ## Relationship diagram
-![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/6acdedc2-64e2-404a-9f49-56ad51c20d50)
+![image](https://github.com/avaitovichSolvd/SolvdHomework/assets/143712741/6e3183ee-5812-447a-aef6-02519bf81f2c)
 
 
 </br>
@@ -47,16 +48,22 @@ This document contains information on how to use the API for the legal services 
 Information about User
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
-| PK | id_user | int | Primery key for User |
-|  | username | varchar(45) | User uniq name |
-|  | password | varchar(45) | User password |
+| PK | user_id | int | User ID - Primery key  |
+|  | first_name | varchar(45) | User first name |
+|  | last_name | varchar(45) | User last name |
+|  | password | varchar(45) | Account password |
+|  | phone_number | varchar(15) | User phone number |
+|  | email | varchar(255) | User email |
 
 ### 2. Lawyer
 Information about Lawyer
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
-| PK | id_lawyer | int | Primery key for lawyer |
-|  | name | varchar(255) | Lawyer true name |
+| PK | lawyer_id | int | Lawyer ID - Primery key |
+|  | first_name | varchar(45) | Lawyer first name |
+|  | last_name | varchar(45) | Lawyer last name |
+|  | phone_number | varchar(15) | Lawyer phone number |
+|  | email | varchar(255) | Lawyer email |
 |  | branch_of_law | enum | Optional: 'Criminal law', 'Labor law', 'Corporate and commercial law', 'International law', 'Healthcare and medical law' |
 |  | description | text | Description of the specialist's profile |
 |  | rate | enum | Optional rate for lawyer: '1', '2', '3', '4', '5' |
@@ -66,8 +73,8 @@ Information about Lawyer
 Information about User's Favorites of saved Lawyers
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
-| PK | favorites_id | int | Primery key for User's Favorites |
-| FK | username | varchar(45) | User uniq name |
+| PK | favorites_id | int | User's Favorites - Primery key |
+| FK | user_id | INT | User ID |
 | FK | lawyer_id | INT | Lawyer ID |
 
 ### 4. Calendar events
@@ -75,8 +82,8 @@ Information about Calendar events between user and lawyer
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
 | PK | event_id | int | Primery key for Event |
-| FK | username | varchar(45) | User uniq name |
-| FK | id_lawyer | INT | Lawyer ID |
+| FK | user_id | INT | User ID |
+| FK | lawyer_id | INT | Lawyer ID |
 |  | event_date | datetime | Date and time about meet |
 |  | event_description | text | Description about meet |
 
@@ -85,8 +92,8 @@ Information about Chat between user and lawyer
 | Key | Column name | Data type | Description |
 |------------|------------|------------|------------|
 | PK | message_id | int | Primery key for Message |
-| FK | user_chat | varchar(45) | User uniq name |
-| FK | lawyer_chat | INT | Lawyer ID |
+| FK | user_id | INT | User ID |
+| FK | lawyer_id | INT | Lawyer ID |
 |  | message_text | text | Message content |
 |  | sender_type | enum | Optional based of sender role: 'user', 'lawyer' |
 |  | timestamp | timestamp | Sending time |
@@ -107,17 +114,20 @@ http://localhost:3000
 
 ### 1.1. Sign Up
 
-- **URL:** `/auth/api/SignUp`
+- **URL:** `/auth/register`
 - **Method:** POST 
 - **Description:** Register a new user.
-- **Request Body:** JSON object with `username` and `password` fields.
-  - `username` (string): The username of the new user.
+- **Request Body:** JSON object with next fields:
+  - `first_name` (string): The first name of the new user.
+  - `last_name` (string): The last name of the new user.
   - `password` (string): The password for the new user.
+  - `email` (string): The email of the new user.
+  - `phone_number` (string): The phone number of the new user.
 - **Response:**
   - Success (HTTP 201 Created):
     - Returns a JSON object with a success message and an access token.
   - Error (HTTP 400 Bad Request):
-    - Returns a JSON object with an error message if the request is missing fields or if the username already exists.
+    - Returns a JSON object with an error message if the request is missing fields or if the email already exists.
   - Error (HTTP 500 Internal Server Error):
     - Returns a JSON object in case of a server error.
    
@@ -125,11 +135,14 @@ http://localhost:3000
 **Usage Example**
 ```javascript
 const userData = {
-  username: "exampleUser",
-  password: "password123"
+  "first_name": "TestName02",
+  "last_name": "TestLastName02",
+  "password": "test123456789",
+  "email": "testemail@mail.com",
+  "phone_number": "+123456789"
 };
 
-const signUpURL = 'http://localhost:3000/auth/api/SignUp';
+const signUpURL = 'http://localhost:3000/auth/register';
 
 fetch(signUpURL, {
   method: 'POST',
@@ -156,11 +169,11 @@ fetch(signUpURL, {
 
 ### 1.2. Sign In
 
-- **URL:** `/auth/api/SignIn`
+- **URL:** `/auth/login`
 - **Method:** POST 
 - **Description:** Authenticate an existing user.
-- **Request Body:** JSON object with `username` and `password` fields.
-  - `username` (string): The username of the user.
+- **Request Body:** JSON object with next fields:
+  - `email` (string): The email of the user.
   - `password` (string): The password of the user.
 - **Response:**
   - Success (HTTP 200 OK):
@@ -176,11 +189,11 @@ fetch(signUpURL, {
 **Usage Example**
 ```javascript
 const userData = {
-  username: "exampleUser",
-  password: "password123"
+  "email": "testemail@mail.com",
+  "password": "test123456789"
 };
 
-const signInURL = 'http://localhost:3000/auth/api/SignIn';
+const signInURL = 'http://localhost:3000/auth/login';
 
 fetch(signInURL, {
   method: 'POST',
@@ -203,10 +216,14 @@ fetch(signInURL, {
 }
 ```
 </br>
+</br>
 
-### 1.3. Get Users
+[Content](#content)
+## User's Profile
 
-- **URL:** `/auth/api/users`
+### 1.1. Get Users
+
+- **URL:** `/user/users`
 - **Method:** GET 
 - **Description:** Retrieve a list of all users.
 - **Response:**
@@ -219,7 +236,7 @@ fetch(signInURL, {
 **Usage Example**
 ```javascript
 
-const getUsersURL = 'http://localhost:3000/auth/api/users';
+const getUsersURL = 'http://localhost:3000/user/users';
 
 fetch(getUsersURL, {
   method: 'GET',
@@ -238,32 +255,33 @@ fetch(getUsersURL, {
 {
   "users": [
     {
-      "id_user": 1,
-      "username": "testUser",
-      "password": "test123456789"
+      "user_id": 1,
+      "first_name": "TestName",
+      "last_name": "TestLastName",
+      "password": "test123456789",
+      "phone_number": "+123456789",
+      "email": "testemail02@mail.com"
     },
     {
-      "id_user": 3,
-      "username": "testUser02",
-      "password": "test123456789"
+      "user_id": 2,
+      "first_name": "TestName02",
+      "last_name": "TestLastName02",
+      "password": "test123456789",
+      "phone_number": "+123456789",
+      "email": "testemail@mail.com"
     }
   ]
 }
 ```
-</br>
-</br>
-
-[Content](#content)
-## User's Profile
 
 
-### 1.1. Delete User
+### 1.2. Delete User
 
-- **URL:** `/user/api/DeleteUser/{username}`
+- **URL:** `/user/users/{user_id}`
 - **Method:** DELETE 
 - **Description:** Delete a user.
 - **URL Parameters:**
-  - `username` (string, required): The username of the user to be deleted.
+  - `user_id` (int, required): The user_id of the user to be deleted.
 - **Response:**
 - Success (HTTP 200 OK):
   - Returns a JSON object with a success message indicating that the user was deleted successfully.
@@ -277,7 +295,7 @@ fetch(getUsersURL, {
 
 **Usage Example**
 ```javascript
-const deleteUserURL = `http://localhost:3000/user/api/DeleteUser/${username}`;
+const deleteUserURL = `http://localhost:3000/user/users/${user_id}`;
 
 fetch(deleteUserURL, {
   method: 'DELETE',
@@ -299,13 +317,13 @@ fetch(deleteUserURL, {
 ```
 </br>
 
-### 1.2. Add lawyer in favorites
+### 1.3. Add lawyer in favorites
 
-- **URL:** `/user/api/AddToFavorites`
+- **URL:** `/user/favorite`
 - **Method:** POST 
 - **Description:** Save lawyer's profile in user's favorites.
-- **Request Body:** JSON object with `username` and `lawyer_id` fields.
-  - `username` (string): The username of the user.
+- **Request Body:** JSON object with `user_id` and `lawyer_id` fields.
+  - `user_id` (string): The user_id of the user.
   - `lawyer_id` (string): The id of the lawyer.
 - **Response:**
  - Success (HTTP 200 OK):
@@ -319,11 +337,11 @@ fetch(deleteUserURL, {
 **Usage Example**
 ```javascript
 const userFavoritesData = {
-  "username": "testUser",
+  "user_id": 1,
   "lawyer_id": 2
 };
 
-const addToFavoritesURL = 'http://localhost:3000/user/api/AddToFavorites';
+const addToFavoritesURL = 'http://localhost:3000/user/favorite';
 
 fetch(addToFavoritesURL, {
   method: 'POST',
@@ -346,9 +364,9 @@ fetch(addToFavoritesURL, {
 ```
 </br>
 
-### 1.3. Get User's Favorites
+### 1.4. Get User's Favorites
 
-- **URL:** `/user/api/ViewFavorites/{username}`
+- **URL:** `/user/favorites/{username}`
 - **Method:** GET 
 - **Description:** Retrieve a list of saved items in user's favorites.
 - **Response:**
@@ -366,7 +384,7 @@ fetch(addToFavoritesURL, {
 **Usage Example**
 ```javascript
 
-const getUserFavoritesURL = `http://localhost:3000/user/api/ViewFavorites/${username}`;
+const getUserFavoritesURL = `http://localhost:3000/user/favorites/${user_id}`;
 
 fetch(getUserFavoritesURL, {
   method: 'GET',
@@ -397,14 +415,14 @@ fetch(getUserFavoritesURL, {
 ```
 </br>
 
-### 1.4. Delete lawyer's card from user's favorites
+### 1.5. Delete lawyer's card from user's favorites
 
-- **URL:** `/user/api/RemoveFromFavorites`
+- **URL:** `/user/favorite?user_id={user_id}&lawyer_id={lawyer_id}`
 - **Method:** DELETE 
 - **Description:** Removes the saved lawyer profile from the user's list.
 - **Request Body:** JSON object with `username` and `lawyer_id` fields.
-  - `username` (string): The username of the user.
-  - `lawyer_id` (string): The id of the lawyer.
+  - `user_id` (string): The user_id of the user.
+  - `lawyer_id` (string): The lawyer_id of the lawyer.
 - **Response:**
 - Success (HTTP 200 OK):
   - Returns a JSON object with a success message indicating the lawyer profile was successfully removed from the favorites.
@@ -419,17 +437,11 @@ fetch(getUserFavoritesURL, {
 
 **Usage Example**
 ```javascript
-const userLawyer = {
-  "username": "testUser",
-  "lawyer_id": 2
-}
-
-const deleteUserURL = `http://localhost:3000/user/api/RemoveFromFavorites`;
+const deleteUserURL = `http://localhost:3000/user/favorite?user_id=${user_id}&lawyer_id=${lawyer_id}`;
 
 fetch(deleteUserURL, {
   method: 'DELETE',
   headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(userLawyer)
 })
   .then(response => response.json())
   .then(data => {
@@ -453,11 +465,14 @@ fetch(deleteUserURL, {
 
 ### 1.1. Add new lawyer
 
-- **URL:** `/lawyer/api/AddLawyer`
+- **URL:** `/lawyers/lawyer`
 - **Method:** POST 
 - **Description:** Register a new lawyer.
-- **Request Body:** JSON object with ... fields.
-  - `name` (string): The name of the new lawyer.
+- **Request Body:** JSON object with next fields:
+  - `first_name` (string): The first name of the new lawyer.
+  - `last_name` (string): The last name of the new lawyer.
+  - `phone_number` (string): The phone number of the new lawyer.
+  - `email` (string): The email of the new lawyer.
   - `branch_of_law` (string): Optional field of law: 'Criminal law', 'Labor law', 'Corporate and commercial law', 'International law', 'Healthcare and medical law'.
   - `description` (string): profile description.
   - `rate` (number): from 1 to 5.
@@ -475,14 +490,17 @@ fetch(deleteUserURL, {
 **Usage Example**
 ```javascript
 const lawyerData = {
-  "name": "testLawyer02",
-  "branch_of_law": "Corporate and commercial law",
-  "description": "Specializing in corporate and commercial law. Assisting with company registration and commercial matters.",
+  "first_name": "testLawyerName",
+  "last_name": "testLawyerLastName",
+  "phone_number": "+123456789",
+  "email": "testLawyer02@mail.com",
+  "branch_of_law": "Labor law",
+  "description": "Experienced (10 years)",
   "rate": 3,
-  "budget": 2000
+  "budget": 1000
 };
 
-const newLawyerURL = 'http://localhost:3000/lawyer/api/AddLawyer';
+const newLawyerURL = 'http://localhost:3000/lawyers/lawyer';
 
 fetch(newLawyerURL, {
   method: 'POST',
@@ -508,11 +526,14 @@ fetch(newLawyerURL, {
 
 ### 1.2. Update lawyer
 
-- **URL:** `/lawyer/api/UpdateLawyer/{lawyer_id}`
+- **URL:** `/lawyers/lawyer/{lawyer_id}`
 - **Method:** PUT 
 - **Description:** Update lawyer's profile.
 - **Request Body:** JSON object with ... fields.
-  - `name` (string): The name of the new lawyer.
+  - `first_name` (string): The first name of the new lawyer.
+  - `last_name` (string): The last name of the new lawyer.
+  - `phone_number` (string): The phone number of the new lawyer.
+  - `email` (string): The email of the new lawyer.
   - `branch_of_law` (string): Optional field of law: 'Criminal law', 'Labor law', 'Corporate and commercial law', 'International law', 'Healthcare and medical law'.
   - `description` (string): profile description.
   - `rate` (number): from 1 to 5.
@@ -533,14 +554,17 @@ fetch(newLawyerURL, {
 **Usage Example**
 ```javascript
 const lawyerData = {
-  "name": "UpdateTestLawyer02",
+  "first_name": "testLawyerNameUP",
+  "last_name": "testLawyerLastNameUP",
+  "phone_number": "+1234567888",
+  "email": "testLawyerUP@mail.com",
   "branch_of_law": "Corporate and commercial law",
-  "description": "Specializing in corporate and commercial law. Assisting with company registration and commercial matters.",
-  "rate": 5,
-  "budget": 5000
+  "description": "Experienced (15 years) criminal defense lawyer. Protecting your interests in criminal cases.",
+  "rate": 4,
+  "budget": 3000
 };
 
-const newLawyerURL = 'http://localhost:3000/lawyer/api/UpdateLawyer/${lawyer_id]';
+const newLawyerURL = 'http://localhost:3000//lawyers/lawyer/${lawyer_id]';
 
 fetch(newLawyerURL, {
   method: 'POST',
@@ -565,7 +589,7 @@ fetch(newLawyerURL, {
 
 ### 1.3. Delete Lawyer
 
-- **URL:** `/lawyer/api/DeleteLawyer/${lawyer_id}`
+- **URL:** `/lawyers/lawyer/${lawyer_id}`
 - **Method:** DELETE 
 - **Description:** Delete a lawyer.
 - **URL Parameters:**
@@ -584,7 +608,7 @@ fetch(newLawyerURL, {
 
 **Usage Example**
 ```javascript
-const deleteLawyerURL = `http://localhost:3000/lawyer/api/DeleteLawyer/${lawyer_id}`;
+const deleteLawyerURL = `http://localhost:3000/lawyers/lawyer/${lawyer_id}`;
 
 fetch(deleteLawyerURL, {
   method: 'DELETE',
@@ -609,20 +633,18 @@ fetch(deleteLawyerURL, {
 
 [Content](#content)
 ## Filter And Get a List of Lawyers
-- **URL:** `/filter/api/lawyers`
-- **URL filter:** `/filter/api/lawyers?name_of_param={param}&name_of_second_param={param2}`
+- **URL:** `/lawyers/filter`
+- **URL filter:** `/lawyers/filter?name_of_param={param}&name_of_second_param={param2}`
 - **Method:** GET 
 - **Description:** Obtaining a list of lawyers with and without filtering.
 - **Query Parameters:**
-  - `name` (string): Filter by lawyer's name.
-  - `branch_of_law` (string): Filter by the branch of law.
-  - `minRate` (number): Filter by the minimum hourly rate.
-  - `maxRate` (number): Filter by the maximum hourly rate.
-  - `exactRate` (number): Filter by the exact hourly rate.
-  - `minBudget` (number): Filter by the minimum budget.
-  - `maxBudget` (number): Filter by the maximum budget.
-  - `exactBudget` (number): Filter by the exact budget.
-  - `orderBy` (string): Sort the results by a specific field.
+  - `first_name` (string): The first name of the new lawyer.
+  - `last_name` (string): The last name of the new lawyer.
+  - `email` (string): The email of the new lawyer.
+  - `branch_of_law` (string): Optional field of law: 'Criminal law', 'Labor law', 'Corporate and commercial law', 'International law', 'Healthcare and medical law'.
+  - `description` (string): profile description.
+  - `rate` (number): from 1 to 5.
+  - `budget` (number): float nums support.
 - **Response:**
 - Success (HTTP 200 OK):
   - Returns a JSON object with an array of lawyer objects that match the query parameters.
@@ -634,7 +656,7 @@ fetch(deleteLawyerURL, {
 **Usage Example BASIC GET**
 ```javascript
 
-const getLawyersURL = `http://localhost:3000/filter/api/lawyers`;
+const getLawyersURL = `http://localhost:3000/lawyers/filter`;
 
 fetch(getLawyersURL, {
   method: 'GET',
@@ -685,7 +707,7 @@ fetch(getLawyersURL, {
 **Usage Example FILTER GET**
 ```javascript
 
-const getLawyersURL = `http://localhost:3000/filter/api/lawyers?branch_of_law=Criminal law&minRate=3&maxRate=5`;
+const getLawyersURL = `http://localhost:3000/lawyers/filter?branch_of_law=Criminal law&minRate=3&maxRate=5`;
 
 fetch(getLawyersURL, {
   method: 'GET',
@@ -722,12 +744,12 @@ fetch(getLawyersURL, {
 
 ### 1.1. Create Event
 
-- **URL:** `/calendar/api/AddEvent`
+- **URL:** `/calendar/event`
 - **Method:** POST 
-- **Description:** Create new evnt - meeting between user and lawyer.
-- **Request Body:** JSON object with `id_lawyer`, `username`, `event_date`, `event_description` fields.
-  - `id_lawyer` (string): The lawyer ID.
-  - `username` (string): Uniq user name.
+- **Description:** Create new event - meeting between user and lawyer.
+- **Request Body:** JSON object with `lawyer_id`, `user_id`, `event_date`, `event_description` fields.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): The user ID.
   - `event_date` (datetime): Date and time about meet.
   - `event_description` (string): Description about meet.
 - **Response:**
@@ -740,13 +762,13 @@ fetch(getLawyersURL, {
 **Usage Example**
 ```javascript
 const eventData = {
-  "id_lawyer": 1,
-  "username": "testUser",
+  "lawyer_id": 1,
+  "user_id": 2,
   "event_date": "2023-11-12 16:00:00",
   "event_description": "Meeting with the client"
 }
 
-const addEventURL = 'http://localhost:3000/calendar/api/AddEvent'
+const addEventURL = 'http://localhost:3000/calendar/event'
 
 fetch(addEventURL, {
   method: 'POST',
@@ -772,12 +794,12 @@ fetch(addEventURL, {
 
 ### 1.2. View all events
 
-- **URL:** `/calendar/api/GetEventList?id_lawyer={id_lawyer}&username={username}`
+- **URL:** `/calendar/list?lawyer_id={lawyer_id}&user_id={user_id}`
 - **Method:** GET 
 - **Description:** Get all created events.
 - **Query Parameters:**
-  - `id_lawyer` (string): The lawyer ID.
-  - `username` (string): Uniq user name.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): The user ID.
 - **Response:**
   - Success (HTTP 200 Created):
     - Returns a JSON object with a success message and list of events between lawyer and user.
@@ -787,7 +809,7 @@ fetch(addEventURL, {
 
 **Usage Example**
 ```javascript
-const viewEventListURL = 'http://localhost:3000/calendar/api/GetEventList?id_lawyer=1&username=testUser'
+const viewEventListURL = 'http://localhost:3000/calendar/list?lawyer_id=${lawyer_id}&user_id=${user_id}'
 
 fetch(viewEventListURL, {
   method: 'GET',
@@ -826,7 +848,7 @@ fetch(viewEventListURL, {
 
 ### 1.3. Delete event
 
-- **URL:** `/calendar/api/DeleteEvent/{event_id}`
+- **URL:** `/calendar/event/{event_id}`
 - **Method:** DELETE 
 - **Description:** Delete meeting.
 - **URL Parameters:**
@@ -843,7 +865,7 @@ fetch(viewEventListURL, {
 
 **Usage Example**
 ```javascript
-const deleteLawyerURL = `http://localhost:3000/calendar/api/DeleteEvent/3`;
+const deleteLawyerURL = `http://localhost:3000/calendar/event/${event_id`;
 
 fetch(deleteLawyerURL, {
   method: 'DELETE',
@@ -867,12 +889,12 @@ fetch(deleteLawyerURL, {
 
 ### 1.4. Send notification about event
 
-- **URL:** `/calendar/api/EventNotificationToChat`
+- **URL:** `/calendar/notification`
 - **Method:** POST 
 - **Description:** Send notification in chat about meeting between user and lawyer.
 - **Request Body:** JSON object with `user_chat`, `lawyer_chat`, `event_id` fields.
-  - `lawyer_chat` (string): The lawyer ID.
-  - `user_chat` (string): Uniq user name.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): The user ID.
   - `event_id` (datetime): Uniq event ID.
   - `sender_type` (string): Optional role of sender: "user" or "lawyer".
 - **Response:**
@@ -886,9 +908,9 @@ fetch(deleteLawyerURL, {
 
 **Usage Example**
 ```javascript
-const eventNoteData = { "user_chat": "testUser", "lawyer_chat": "1", "event_id": "1", "sender_type": "user" }
+const eventNoteData = { "user_id": 1, "lawyer_id": "1", "event_id": "1", "sender_type": "user" };
 
-const sendEventNotificationURL = 'http://localhost:3000/calendar/api/EventNotificationToChat'
+const sendEventNotificationURL = 'http://localhost:3000/calendar/notification'
 
 fetch(sendEventNotificationURL, {
   method: 'POST',
@@ -917,12 +939,12 @@ fetch(sendEventNotificationURL, {
 
 ### 1.1. Send message
 
-- **URL:** `/chat/api/SendMessage`
+- **URL:** `/chat/send_messagee`
 - **Method:** POST 
 - **Description:** Sending message from user to lawyer.
 - **Request Body:** JSON object with `user_chat`, `lawyer_chat`, `message_text` fields.
-  - `lawyer_chat` (string): The lawyer ID.
-  - `user_chat` (string): Uniq user name.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): Uniq user name.
   - `message_text` (string): Content in message.
   - `sender_type` (string): Optional role of sender: "user" or "lawyer".
 - **Response:**
@@ -935,13 +957,13 @@ fetch(sendEventNotificationURL, {
 **Usage Example**
 ```javascript
 const messageData = {
-"user_chat": "testUser",
-"lawyer_chat": "1",
+"user_id": "1",
+"lawyer_id": "1",
 "message_text": "How are you?",
 "sender_type": "lawyer"
 }
 
-const sendingMessageURL = 'http://localhost:3000/chat/api/SendMessage'
+const sendingMessageURL = 'http://localhost:3000/chat/send_messagee'
 
 fetch(sendingMessageURL, {
   method: 'POST',
@@ -967,12 +989,12 @@ fetch(sendingMessageURL, {
 
 ### 1.2. View chat
 
-- **URL:** `/chat/api/GetChatMessages?user_chat={user_chat}&lawyer_chat={lawyer_chat}`
+- **URL:** `/chat/history?user_id={user_id}&lawyer_id={lawyer_id}`
 - **Method:** GET 
 - **Description:** Get chat history.
 - **Query Parameters:**
-  - `lawyer_chat` (string): The lawyer ID.
-  - `user_chat` (string): Uniq user name.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): Uniq user name.
 - **Response:**
   - Success (HTTP 200 Created):
     - Returns a JSON object with a success message and list of events between lawyer and user.
@@ -982,7 +1004,7 @@ fetch(sendingMessageURL, {
 
 **Usage Example**
 ```javascript
-const viewChatURL = 'http://localhost:3000/chat/api/GetChatMessages?user_chat=testUser&lawyer_chat=1'
+const viewChatURL = 'http://localhost:3000/chat/history?user_id=${user_id}&lawyer_id=${lawyer_id}'
 
 fetch(viewChatURL, {
   method: 'GET',
@@ -1023,12 +1045,12 @@ fetch(viewChatURL, {
 
 ### 1.3. Delete chat
 
-- **URL:** `/chat/api/DeleteChat?user_chat={user_chat}&lawyer_chat={lawyer_chat}`
+- **URL:** `/chat/history?user_id={user_id}&lawyer_id={lawyer_id}'
 - **Method:** DELETE 
 - **Description:** Delete meeting.
 - **Query Parameters:**
-  - `lawyer_chat` (string): The lawyer ID.
-  - `user_chat` (string): Uniq user name.
+  - `lawyer_id` (string): The lawyer ID.
+  - `user_id` (string): Uniq user name.
 - **Response:**
 - Success (HTTP 200 OK):
   - Returns a JSON object with a success message indicating that the meet was successfully deleted.
@@ -1039,7 +1061,7 @@ fetch(viewChatURL, {
 
 **Usage Example**
 ```javascript
-const deleteChatURL = `http://localhost:3000/chat/api/DeleteChat?user_chat=testUser&lawyer_chat=1`;
+const deleteChatURL = `http://localhost:3000/chat//chat/history?user_id=${user_id}&lawyer_id=${lawyer_id}`;
 
 fetch(deleteChatURL, {
   method: 'DELETE',
@@ -1060,3 +1082,4 @@ fetch(deleteChatURL, {
 }
 ```
 </br>
+

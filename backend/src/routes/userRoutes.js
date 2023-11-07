@@ -5,9 +5,9 @@ const bodyParser = require("body-parser");
 
 router.use(bodyParser.json());
 router.get("/users", userController.getUsers); //null
-router.delete("/users/:id", userController.deleteUser); //params
+router.delete("/users/:user_id", userController.deleteUser); //params
 router.post("/favorite", userController.addFavorite); //body
-router.get("/favorites/list/:id", userController.getFavorites); //params
-router.delete("/favorites", userController.removeFavorite); //query
+router.get("/favorites/:user_id", userController.getFavorites); //params
+router.delete("/favorite", userController.removeFavorite); //query
 
 module.exports = router;

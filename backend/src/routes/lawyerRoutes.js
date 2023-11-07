@@ -8,5 +8,6 @@ router.use(bodyparser.json());
 router.post("/lawyer", lawyerController.addLawyer) //body
 router.put("/lawyer/:id", lawyerController.updateLawyer) //params && body
 router.delete("/lawyer/:id", lawyerController.deleteLawyer) //params
+router.get("/filter", lawyerController.getList) //query
 
 module.exports = router;

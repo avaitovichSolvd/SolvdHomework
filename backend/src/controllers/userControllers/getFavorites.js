@@ -16,10 +16,14 @@ const getFavorites = async (req, res) => {
 
     const result = await userModel.getFavoritesList(id);
 
-    if (result.length > 0) {
-      return res.status(200).json({ result: result });
+    if (result) {
+      if (result.length > 0) {
+        return res.status(200).json({ result: result });
+      } else {
+        return res.status(200).json({ message: "The favorites list is empty" });
+      }
     } else {
-      return res.status(404).json({ message: "The favorites list is empty" });
+      return res.status(404).json({ message: "This user doesn't exist" });
     }
   } catch (error) {
     return res

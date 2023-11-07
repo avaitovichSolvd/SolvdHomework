@@ -17,7 +17,7 @@ const addFavorite = async (req, res) => {
         .status(200)
         .json({ message: "Lawyer profile added to the favorites" });
     } else {
-      return res.status(500).json({ error: "Error adding to favorites" });
+      return res.status(404).json({ error: "Error adding to favorites, wrong user_id or lawyer_if" });
     }
   } catch (error) {
     return res
