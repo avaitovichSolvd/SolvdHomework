@@ -16,8 +16,6 @@ const crateToken = (header, payload) => {
   const encodedHeader = base64url(JSON.stringify(header));
   const encodedPayload = base64url(JSON.stringify(payload));
 
-  console.log(encodedPayload)
-
   const dataToSign = `${encodedHeader}.${encodedPayload}`;
 
   const signature = base64url(
@@ -30,19 +28,25 @@ const crateToken = (header, payload) => {
 };
 
 const verifyToken = (jwtToken) => {
-  const [encodedHeader, encodedPayload, signature] = jwtToken.split(".");
+  const [, jwtTokenBase64] = jwtToken.split(" ");
+  let [encodedHeader, encodedPayload, signature] = jwtTokenBase64.split(".");
+
+  encodedHeader = encodedHeader.split(" ");
+  encodedHeader = encodedHeader[1];
+
+  console.log("signature: ", signature);
+
   const dataToVerify = `${encodedHeader}.${encodedPayload}`;
-  const verifiedSignature = crypto
-    .createHmac("sha256", secretKey)
-    .update(dataToVerify)
-    .digest("base64");
+  
+  const verifiedSignature = base64url(
+    crypto.createHmac("sha256", secretKey).update(dataToVerify).digest("base64")
+  );
+  console.log("verifiedSignature: ", verifiedSignature);
 
-  const signatureToVerify = base64url(signature);
-
-  if (verifiedSignature === signatureToVerify) {
+  if (verifiedSignature === signature) {
     try {
       const payload = JSON.parse(
-        Buffer.from(base64url(encodedPayload), "base64").toString("utf-8")
+        Buffer.from(base64url(encodedPayload), "base64url").toString("utf-8")
       );
       return payload;
     } catch (error) {
@@ -60,9 +64,9 @@ const jwt = {
 
 const middlewareAuthentication = (req, res, next) => {
   try {
-    const jwtToken = req.headers.authorization;
+    const authToken = req.headers.authorization;
 
-    const result = jwt.verifyToken(jwtToken);
+    const result = jwt.verifyToken(authToken);
 
     if (result.error) {
       res
