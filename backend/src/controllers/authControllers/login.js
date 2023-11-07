@@ -1,8 +1,5 @@
 const authModel = require("../../models/authModel");
-const jwt = require("../../../jwt");
-const uuid = require("uuid");
-
-const secretKey = uuid.v4();
+const { jwt } = require("../../../jwt");
 
 const login = async (req, res) => {
   try {
@@ -27,15 +24,13 @@ const login = async (req, res) => {
         email: userData.email,
       };
 
-      const token = jwt(secretKey, header, payload);
+      const token = jwt.createToken(header, payload);
       return res.status(200).json({
         message: "Operation to add a new user was successful",
         token,
       });
     } else {
-      return res
-        .status(401)
-        .json({ error: "Invalid email or password"});
+      return res.status(401).json({ error: "Invalid email or password" });
     }
   } catch (error) {
     return res

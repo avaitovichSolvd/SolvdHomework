@@ -1,3 +1,4 @@
+const { middlewareAuthentication } = require("../../../jwt");
 const userModel = require("../../models/userModel");
 
 const addFavorite = async (req, res) => {
@@ -17,7 +18,9 @@ const addFavorite = async (req, res) => {
         .status(200)
         .json({ message: "Lawyer profile added to the favorites" });
     } else {
-      return res.status(404).json({ error: "Error adding to favorites, wrong user_id or lawyer_if" });
+      return res.status(404).json({
+        error: "Error adding to favorites, wrong user_id or lawyer_if",
+      });
     }
   } catch (error) {
     return res
@@ -26,4 +29,6 @@ const addFavorite = async (req, res) => {
   }
 };
 
-module.exports = addFavorite
+module.exports = addFavorite;
+
+module.exports = [middlewareAuthentication, addFavorite];
