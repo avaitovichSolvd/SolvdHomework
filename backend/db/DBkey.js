@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "w%2npu9^Nm&Ys!H",
+    password: "YCABtPLrKbCk",
     database: "solvdLawDB",
 });
 
