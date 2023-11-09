@@ -78,7 +78,7 @@ const lawyerModel = {
   },
 
   getList: async (queryParams) => {
-    const sql = "SELECT * FROM lawyer WHERE 1 = 1";
+    const sql = "SELECT lawyer_id, first_name, last_name, phone_number, email, branch_of_law, description, rate, budget FROM lawyer WHERE 1 = 1";
     const {
       first_name,
       last_name,

@@ -15,7 +15,7 @@ const calendarModel = {
   },
 
   getEvents: async (lawyer_id, user_id) => {
-    let sql = "SELECT * FROM calendar_events WHERE 1=1";
+    let sql = "SELECT event_id, lawyer_id, user_id, event_date, event_description FROM calendar_events WHERE 1=1";
     const values = [];
 
     if (lawyer_id) {

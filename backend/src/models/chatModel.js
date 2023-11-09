@@ -16,7 +16,7 @@ const chatModel = {
 
   getChat: async (user_id, lawyer_id) => {
     const sql =
-      "SELECT * FROM chat_messages WHERE (user_id = ? AND lawyer_id = ?) OR (user_id = ? AND lawyer_id = ?) ORDER BY timestamp";
+      "SELECT message_id, user_id, lawyer_id, message_text, sender_type, timestamp FROM chat_messages WHERE (user_id = ? AND lawyer_id = ?) OR (user_id = ? AND lawyer_id = ?) ORDER BY timestamp";
     const values = [user_id, lawyer_id, user_id, lawyer_id];
 
     try {

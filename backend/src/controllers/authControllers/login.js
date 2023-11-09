@@ -21,7 +21,6 @@ const login = async (req, res) => {
       const payload = {
         first_name: userData.first_name,
         last_name: userData.last_name,
-        email: userData.email,
       };
 
       const token = jwt.createToken(header, payload);

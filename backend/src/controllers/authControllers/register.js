@@ -2,8 +2,6 @@ const authModel = require("../../models/authModel");
 const { jwt } = require("../../../jwt");
 const uuid = require("uuid");
 
-const secretKey = uuid.v4();
-
 const register = async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ error: "Request body is missing" });
@@ -24,7 +22,6 @@ const register = async (req, res) => {
     const payload = {
       first_name: first_name,
       last_name: last_name,
-      email: email,
     };
 
     const existingUser = await authModel.findExisting(email);

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const secretKey = process.env.SECRET_KEY;
 
+
 const base64url = (source) => {
   let encodedSource = Buffer.from(source).toString("base64");
   encodedSource = encodedSource.replace(/=/g, "");
@@ -10,6 +11,13 @@ const base64url = (source) => {
 };
 
 const crateToken = (header, payload) => {
+  if (!secretKey) {
+    throw new Error("No secret key");
+  }
+
+  if (!payload) {
+    throw new Error("No payload");
+  }
   const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
   payload.exp = expirationTime;
 
@@ -18,42 +26,52 @@ const crateToken = (header, payload) => {
 
   const dataToSign = `${encodedHeader}.${encodedPayload}`;
 
-  const signature = base64url(
-    crypto.createHmac("sha256", secretKey).update(dataToSign).digest("base64")
-  );
+  let signature
+
+  try {
+    signature = base64url(
+      crypto.createHmac("sha256", secretKey).update(dataToSign).digest("base64")
+    );
+  } catch (error) {
+    console.error('Catch err: ', error);
+  }
 
   const jwtToken = `${encodedHeader}.${encodedPayload}.${signature}`;
 
   return jwtToken;
 };
-
-const verifyToken = (jwtToken) => {
-  const [, jwtTokenBase64] = jwtToken.split(" ");
-  let [encodedHeader, encodedPayload, signature] = jwtTokenBase64.split(".");
-
-  encodedHeader = encodedHeader.split(" ");
-  encodedHeader = encodedHeader[1];
-
-  console.log("signature: ", signature);
-
-  const dataToVerify = `${encodedHeader}.${encodedPayload}`;
+const verifyToken = (token) => {
+  if (!secretKey) {
+    throw new Error("No secret key");
+  }
   
-  const verifiedSignature = base64url(
-    crypto.createHmac("sha256", secretKey).update(dataToVerify).digest("base64")
-  );
-  console.log("verifiedSignature: ", verifiedSignature);
+  token = token.replace("Bearer ", "");
 
-  if (verifiedSignature === signature) {
-    try {
-      const payload = JSON.parse(
-        Buffer.from(base64url(encodedPayload), "base64url").toString("utf-8")
-      );
-      return payload;
-    } catch (error) {
-      throw new Error("Invalid token payload");
+  try {
+    const [encodedHeader, encodedPayload, signature] = token.split(".");
+
+    const decodedHeader = Buffer.from(encodedHeader, "base64").toString();
+    const decodedPayload = Buffer.from(encodedPayload, "base64").toString();
+
+    const header = JSON.parse(decodedHeader);
+    const payload = JSON.parse(decodedPayload);
+
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < currentTimestamp) {
+      return { error: "Token has expired" };
     }
-  } else {
-    throw new Error("Invalid token");
+
+    const dataToSign = `${encodedHeader}.${encodedPayload}`;
+    const calculatedSignature = base64url(
+      crypto.createHmac("sha256", secretKey).update(dataToSign).digest("base64")
+    );
+
+    if (calculatedSignature !== signature) {
+      return { error: "Invalid signature" };
+    }
+    return { payload };
+  } catch (error) {
+    return { error: "Invalid token format" };
   }
 };
 
@@ -82,4 +100,7 @@ const middlewareAuthentication = (req, res, next) => {
   }
 };
 
-module.exports = { jwt, middlewareAuthentication };
+module.exports = {
+  jwt,
+  middlewareAuthentication
+};

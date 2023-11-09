@@ -1,18 +1,19 @@
 version: '3'
-
 services:
-  server:
+  server-container:
     build:
       context: .
-    environment:
-      NODE_ENV: production
+      dockerfile: Dockerfile
     ports:
-      - 8089:3001
+      - "3001:3001"
+    depends_on:
+      - mysql-container
 
-  mysql:
+  mysql-container:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: YCABtPLrKbCk
       MYSQL_DATABASE: solvdLawDB
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     ports:
-      - "3307:3307"
+      - "3307:3306"

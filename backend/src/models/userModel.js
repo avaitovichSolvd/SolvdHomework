@@ -2,7 +2,7 @@ const database = require("../../db/DBkey");
 
 const userModel = {
   getUserList: async () => {
-    const sql = "SELECT * FROM user";
+    const sql = "SELECT user_id, first_name, last_name, password, phone_number, email FROM user";
     try {
       const [results, fields] = await database.promise().query(sql);
       return results;

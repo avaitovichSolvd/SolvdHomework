@@ -30,5 +30,3 @@ const addFavorite = async (req, res) => {
 };
 
 module.exports = addFavorite;
-
-module.exports = [middlewareAuthentication, addFavorite];

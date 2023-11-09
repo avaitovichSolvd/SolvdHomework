@@ -6,12 +6,19 @@
 
 ARG NODE_VERSION=18.14.0
 ARG DB_HOST=mysql-container
-ARG DB_PORT=3307
+ARG DB_PORT=3306
 ARG DB_USER=root
 ARG DB_PASSWORD=YCABtPLrKbCk
 ARG DB_NAME=solvdLawDB
 
+
 FROM node:${NODE_VERSION}-alpine
+
+ENV DB_HOST=$DB_HOST
+ENV DB_PORT=3306
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+ENV DB_NAME=$DB_NAME
 
 # Use production node environment by default.
 ENV NODE_ENV production
@@ -39,7 +46,7 @@ COPY server.js ./
 COPY jwt.js ./
 
 # Expose the port that the application listens on.
-EXPOSE 3001
+EXPOSE 3000
 
 # Run the application.
 CMD npm start

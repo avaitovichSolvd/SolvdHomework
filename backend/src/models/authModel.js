@@ -15,7 +15,7 @@ const authModel = {
   },
 
   findExisting: async (email) => {
-    const sql = "SELECT * FROM user WHERE email = ?";
+    const sql = "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ?";
     const values = [email];
 
     try {
@@ -27,7 +27,7 @@ const authModel = {
   },
 
   loginUser: async (email, password) => {
-    const sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+    const sql = "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ? AND password = ?";
     const values = [email, password];
 
     try {
