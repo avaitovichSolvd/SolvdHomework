@@ -1,19 +1,23 @@
-version: '3'
+version: '3.8'
 services:
   server-container:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     depends_on:
       - mysql-container
+    env_file:
+      - .env
 
   mysql-container:
-    image: mysql:latest
+    image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: YCABtPLrKbCk
-      MYSQL_DATABASE: solvdLawDB
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     ports:
       - "3307:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
