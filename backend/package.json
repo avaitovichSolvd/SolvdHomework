@@ -5,13 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "DB_HOST=localhost DB_USER=root DB_PASSWORD=YCABtPLrKbCk DB_NAME=testDB PORT=3001 jest",
+    "test:custom-port": "set PORT=3001 && jest --detectOpenHandles" 
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
