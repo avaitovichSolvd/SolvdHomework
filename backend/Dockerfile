@@ -1,4 +1,4 @@
-FROM node:${NODE_VERSION}-alpine
+FROM node:18.14.0-alpine
 
 ENV NODE_ENV production
 
@@ -9,10 +9,7 @@ RUN npm install --production
 
 USER node
 
-COPY db ./db
-COPY src ./src
-COPY server.js ./
-COPY jwt.js ./
+COPY . .
 
 EXPOSE 3000
 
