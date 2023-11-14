@@ -8,14 +8,18 @@ const authModel = {
 
     try {
       const [result] = await database.promise().query(sql, values);
-      return result.affectedRows === 1;
+      if (result.affectedRows === 1) {
+        const userId = result.insertId;
+        return { user_id: userId, first_name, last_name, email, phone_number };
+      }
     } catch (err) {
       return false;
     }
   },
 
   findExisting: async (email) => {
-    const sql = "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ?";
+    const sql =
+      "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ?";
     const values = [email];
 
     try {
@@ -27,7 +31,8 @@ const authModel = {
   },
 
   loginUser: async (email, password) => {
-    const sql = "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ? AND password = ?";
+    const sql =
+      "SELECT user_id, first_name, last_name, password, phone_number, email FROM user WHERE email = ? AND password = ?";
     const values = [email, password];
 
     try {

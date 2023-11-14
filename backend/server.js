@@ -21,6 +21,14 @@ app.use("/calendar", calendarRoutes);
 app.use("/chat", chatRouters);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server started ${port}`);
-});
+
+const startServer = async (port) => {
+  return new Promise((resolve) => {
+    const server = app.listen(port, () => {
+      console.log(`Server started ${port}`);
+      resolve(server);
+    });
+  });
+};
+
+module.exports = { app, startServer };

@@ -19,11 +19,6 @@ const register = async (req, res) => {
       typ: "JWT",
     };
 
-    const payload = {
-      first_name: first_name,
-      last_name: last_name,
-    };
-
     const existingUser = await authModel.findExisting(email);
 
     if (existingUser) {
@@ -42,10 +37,28 @@ const register = async (req, res) => {
     );
 
     if (newUser) {
+      const userId = newUser.user_id;
+
+      const userInfo = {
+        id: userId,
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        phone_number: phone_number,
+      };
+
+      const payload = {
+        userId: userInfo.id,
+        first_name: userInfo.first_name,
+        last_name: userInfo.last_name,
+        phone_number: userInfo.phone_number,
+      };
+
       const token = jwt.createToken(header, payload);
       return res.status(201).json({
         message: "Operation to add a new user was successful",
         token,
+        user: userInfo,
       });
     } else {
       return res.status(500).json({

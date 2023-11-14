@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "DB_HOST=localhost DB_USER=root DB_PASSWORD=YCABtPLrKbCk DB_NAME=testDB PORT=3001 jest",
-    "test:custom-port": "set PORT=3001 && jest --detectOpenHandles" 
+    "test": "set DB_HOST=localhost&& set DB_USER=root&& set DB_PASSWORD=YCABtPLrKbCk&& set DB_NAME=testDB&& jest"
   },
   "keywords": [],
   "author": "",
