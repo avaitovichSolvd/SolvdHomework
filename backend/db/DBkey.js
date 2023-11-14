@@ -1,0 +1,12 @@
+const mysql = require("mysql2");
+
+console.log("NODE_ENV:", process.env.NODE_ENV);
+
+const db = mysql.createConnection({
+  host: process.env.NODE_ENV === "test" ? "localhost" : "mysql-container",
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.NODE_ENV === "test" ? "testDB" : "solvdLawDB",
+});
+
+module.exports = db;

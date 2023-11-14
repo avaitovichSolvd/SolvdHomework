@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  server-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql-container:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  mysql-container:
+    image: mysql:8.0.34
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./db/solvdLawDBScript.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+volumes:
+  mysql-data:
