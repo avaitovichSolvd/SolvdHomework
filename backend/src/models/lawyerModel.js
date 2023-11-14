@@ -11,8 +11,9 @@ const lawyerModel = {
     rate,
     budget
   ) => {
-    const sql =
+    const insertSql =
       "INSERT INTO lawyer (first_name, last_name, phone_number, email, branch_of_law, description, rate, budget) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    const selectSql = "SELECT LAST_INSERT_ID() as id";
     const values = [
       first_name,
       last_name,
@@ -25,8 +26,9 @@ const lawyerModel = {
     ];
 
     try {
-      const [result] = await database.promise().query(sql, values);
-      return result.affectedRows === 1;
+      await database.promise().query(insertSql, values);
+      const [result] = await database.promise().query(selectSql);
+      return result;
     } catch (err) {
       throw err;
     }
@@ -78,7 +80,8 @@ const lawyerModel = {
   },
 
   getList: async (queryParams) => {
-    const sql = "SELECT lawyer_id, first_name, last_name, phone_number, email, branch_of_law, description, rate, budget FROM lawyer WHERE 1 = 1";
+    let sql =
+      "SELECT lawyer_id, first_name, last_name, phone_number, email, branch_of_law, description, rate, budget FROM lawyer WHERE 1 = 1";
     const {
       first_name,
       last_name,
@@ -90,6 +93,7 @@ const lawyerModel = {
       minBudget,
       maxBudget,
       exactBudget,
+      orderBy, 
     } = queryParams;
 
     if (first_name) {

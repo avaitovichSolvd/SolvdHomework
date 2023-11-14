@@ -8,7 +8,7 @@ const calendarModel = {
 
     try {
       const [result] = await database.promise().query(sql, values);
-      return result.affectedRows === 1;
+      return result;
     } catch (err) {
       throw err;
     }

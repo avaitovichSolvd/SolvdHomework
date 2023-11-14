@@ -1,13 +1,12 @@
 const lawyerModel = require("../../models/lawyerModel");
 
 const deleteLawyer = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: "Lawyer ID must be provided" });
+  }
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({ error: "Lawyer ID must be provided" });
-    }
-
     const result = lawyerModel.deleteLawyer(id);
 
     if (result) {

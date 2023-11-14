@@ -30,5 +30,6 @@ const startServer = async (port) => {
     });
   });
 };
+process.env.NODE_ENV === 'test' ? 0 : startServer(3000) 
 
 module.exports = { app, startServer };

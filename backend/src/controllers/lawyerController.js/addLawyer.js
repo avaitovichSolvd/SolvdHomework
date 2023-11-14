@@ -36,9 +36,10 @@ const addLawyer = async (req, res) => {
     );
 
     if (result) {
+      console.log(result)
       return res
         .status(201)
-        .json({ message: "Operation to add a new lawyer was successful" });
+        .json({ message: "Operation to add a new lawyer was successful", result});
     } else {
       return res
         .status(500)

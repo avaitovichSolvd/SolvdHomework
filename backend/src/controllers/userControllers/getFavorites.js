@@ -5,16 +5,17 @@ const getFavorites = async (req, res) => {
     return res.status(400).json({ error: "Request params is missing" });
   }
 
+  const { user_id } = req.params;
+
+  if (!user_id) {
+    return res
+      .status(400)
+      .json({ error: "id is required to view the favorites" });
+  }
+
   try {
-    const { id } = req.params;
 
-    if (!id) {
-      return res
-        .status(400)
-        .json({ error: "id is required to view the favorites" });
-    }
-
-    const result = await userModel.getFavoritesList(id);
+    const result = await userModel.getFavoritesList(user_id);
 
     if (result) {
       if (result.length > 0) {
