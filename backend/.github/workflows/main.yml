@@ -1,0 +1,42 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'Project/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Deploy to GitHub Pages
+        if: success() && startsWith(github.ref, 'refs/heads/Project/')
+        run: |
+            npm run build
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git checkout -b gh-pages
+            git add -f backend/ 
+            git commit -m "Deploy to GitHub Pages"
+            git push origin gh-pages
+            name: Node.js CI/CD

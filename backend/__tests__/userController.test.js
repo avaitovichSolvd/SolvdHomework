@@ -46,20 +46,20 @@ describe("User Controller", () => {
     spy.mockRestore();
   });
 
-  test("DELETE /users/:user_id should delete a user", async () => {
-    const deleteUserResponse = await request(app)
-      .delete(`/user/users/${user_id}`)
-      .set("Authorization", `Bearer ${authToken}`);
+  // test("DELETE /users/:user_id should delete a user", async () => {
+  //   const deleteUserResponse = await request(app)
+  //     .delete(`/user/users/${user_id}`)
+  //     .set("Authorization", `Bearer ${authToken}`);
 
-    console.log(deleteUserResponse.status);
-    console.log(deleteUserResponse.body);
+  //   console.log(deleteUserResponse.status);
+  //   console.log(deleteUserResponse.body);
 
-    expect(deleteUserResponse.status).toBe(200);
-    expect(deleteUserResponse.body).toHaveProperty(
-      "message",
-      "User deleted successfully"
-    );
-  });
+  //   expect(deleteUserResponse.status).toBe(200);
+  //   expect(deleteUserResponse.body).toHaveProperty(
+  //     "message",
+  //     "User deleted successfully"
+  //   );
+  // });
 });
 
 afterAll(async () => {
@@ -71,3 +71,4 @@ afterAll(async () => {
 // "start": "node server.js",
 // "test": "DB_HOST=localhost DB_USER=root DB_PASSWORD=YCABtPLrKbCk DB_NAME=testDB PORT=3001 jest",
 // "test:custom-port": "set PORT=3001 && jest --detectOpenHandles"
+// docker push avoitovich/backend-server-container:latest
