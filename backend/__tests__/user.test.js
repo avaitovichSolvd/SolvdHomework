@@ -1,13 +1,12 @@
 const request = require("supertest");
 const { app, startServer } = require("../server");
 const database = require("../db/DBkey");
-const clearTestData = require("./ClearTestData");
+const clearTestData = require("../ClearTestData");
 
 let server;
 let user_id;
 let lawyer_id;
 let authToken;
-let fav_id;
 
 beforeAll(async () => {
   try {
@@ -25,6 +24,8 @@ beforeAll(async () => {
     const registerResponse = await request(app)
       .post("/auth/register")
       .send(user);
+
+    console.log("userTest registration: ", registerResponse.body)
 
     expect(registerResponse.status).toBe(201);
     user_id = registerResponse.body.user.id;
@@ -45,6 +46,9 @@ beforeAll(async () => {
       .post("/lawyers/lawyer")
       .send(lawyerToCreate)
       .set("Authorization", `Bearer ${authToken}`);
+
+      console.log("userTest add lawyer: ", lawyerResponse.body)
+
     expect(lawyerResponse.status).toBe(201);
     lawyer_id = lawyerResponse.body.result[0].id;
   } catch (error) {
@@ -66,8 +70,6 @@ describe("User Controller", () => {
       .post("/user/favorite")
       .send({ user_id: user_id, lawyer_id: lawyer_id })
       .set("Authorization", `Bearer ${authToken}`);
-
-    fav_id = response.body.result;
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty(

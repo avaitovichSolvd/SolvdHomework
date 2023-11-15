@@ -1,4 +1,4 @@
-const database = require("../db/DBkey");
+const database = require("./db/DBkey");
 
 const clearTestData = async () => {
     await database.promise().query("DELETE FROM chat_messages");

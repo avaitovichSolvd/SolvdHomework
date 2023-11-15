@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { app, startServer } = require("../server");
 const database = require("../db/DBkey");
-const clearTestData = require("./ClearTestData");
+const clearTestData = require("../ClearTestData");
 
 let server;
 const userToCreate = {

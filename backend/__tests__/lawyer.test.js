@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { app, startServer } = require("../server");
 const database = require("../db/DBkey");
-const clearTestData = require("./ClearTestData");
+const clearTestData = require("../ClearTestData");
 
 let server;
 
@@ -35,6 +35,8 @@ beforeAll(async () => {
       .post("/auth/register")
       .send(userToCreate);
 
+    console.log("userTest registration: ", registerResponse.body);
+
     expect(registerResponse.status).toBe(201);
 
     user_id = registerResponse.body.user.id;
@@ -61,21 +63,19 @@ describe("Lawyer Controller", () => {
     );
   });
 
-
   test("GET /lawyers/filter should respond with a list of lawyers", async () => {
     const response = await request(app).get("/lawyers/filter");
-    console.log(response.body)
+    // console.log(response.body)
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("result");
   });
 
   test("GET /lawyers/filter should respond with a list of lawyers by filters", async () => {
     const response = await request(app).get("/lawyers/filter?minRate=5");
-    console.log(response.body)
+    // console.log(response.body)
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("result");
   });
-
 
   test("PUT /lawyers/lawyer should respond with success message", async () => {
     const response = await request(app)
@@ -86,7 +86,6 @@ describe("Lawyer Controller", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("message", "Lawyer profile updated");
   });
-
 
   test("DELETE /lawyers/lawyer should respond with success message", async () => {
     const response = await request(app)
