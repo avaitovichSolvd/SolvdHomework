@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # - name: Dependencies
-    #   run: npm install
-    #   working-directory: backend
       
     - uses: actions/checkout@v3
     
