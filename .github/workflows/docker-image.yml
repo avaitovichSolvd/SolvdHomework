@@ -20,6 +20,11 @@ jobs:
       run: docker build . --file Dockerfile --tag backend-server-container:$(date +%s)
       working-directory: backend
 
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
     - name: Lint
       run: npm run lint
       working-directory: backend
