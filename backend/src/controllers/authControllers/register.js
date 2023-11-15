@@ -1,6 +1,5 @@
 const authModel = require("../../models/authModel");
 const { jwt } = require("../../../jwt");
-const uuid = require("uuid");
 
 const register = async (req, res) => {
   if (!req.body) {
@@ -63,7 +62,6 @@ const register = async (req, res) => {
     } else {
       return res.status(500).json({
         error: "Operation to add a new user failed",
-        details: error.message,
       });
     }
   } catch (error) {

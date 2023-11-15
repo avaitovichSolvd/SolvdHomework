@@ -20,7 +20,7 @@ app.use("/calendar", calendarRoutes);
 
 app.use("/chat", chatRouters);
 
-const port = process.env.PORT || 3000;
+/* global process */
 
 const startServer = async (port) => {
   return new Promise((resolve) => {

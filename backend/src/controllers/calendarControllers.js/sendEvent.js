@@ -32,7 +32,7 @@ const sendEvent = async (req, res) => {
         .status(200)
         .json({ message: "Event details sent to chat successfully" });
     }
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({
       error: "Failed to send event details to chat",
       details: error.message,

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const secretKey = process.env.SECRET_KEY;
-
+/* global process */
+/* global Buffer */
 
 const base64url = (source) => {
   let encodedSource = Buffer.from(source).toString("base64");
@@ -50,10 +51,10 @@ const verifyToken = (token) => {
   try {
     const [encodedHeader, encodedPayload, signature] = token.split(".");
 
-    const decodedHeader = Buffer.from(encodedHeader, "base64").toString();
+    // const decodedHeader = Buffer.from(encodedHeader, "base64").toString();
     const decodedPayload = Buffer.from(encodedPayload, "base64").toString();
 
-    const header = JSON.parse(decodedHeader);
+    // const header = JSON.parse(decodedHeader);
     const payload = JSON.parse(decodedPayload);
 
     const currentTimestamp = Math.floor(Date.now() / 1000);

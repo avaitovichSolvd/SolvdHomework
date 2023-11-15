@@ -28,5 +28,6 @@ module.exports = {
         "ecmaVersion": "latest"
     },
     "rules": {
+        'no-useless-catch': 'off'
     }
 }

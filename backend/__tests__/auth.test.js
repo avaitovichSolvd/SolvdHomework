@@ -40,8 +40,6 @@ describe("Auth Controller", () => {
     expect(user).toHaveProperty("last_name", "Lastname");
     expect(user).toHaveProperty("email", "name@example.com");
     expect(user).toHaveProperty("phone_number", "1234567890");
-
-    const authToken = response.body.token;
   });
 
   test("POST /auth/login should respond with a success message and a token", async () => {

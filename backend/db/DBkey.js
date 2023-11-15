@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-
+/* global process */
 console.log("NODE_ENV:", process.env.NODE_ENV);
 
 const db = mysql.createConnection({

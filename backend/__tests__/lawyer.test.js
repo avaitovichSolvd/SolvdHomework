@@ -23,7 +23,6 @@ const lawyerToCreate = {
   rate: 5,
   budget: 3000,
 };
-let user_id;
 let authToken;
 
 beforeAll(async () => {
@@ -39,7 +38,6 @@ beforeAll(async () => {
 
     expect(registerResponse.status).toBe(201);
 
-    user_id = registerResponse.body.user.id;
     authToken = registerResponse.body.token;
   } catch (error) {
     console.error("Error starting server:", error);
