@@ -2,15 +2,26 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "TestCI" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "TestCI" ]
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: YCABtPLrKbCk
+          MYSQL_DATABASE: testDB
+          MYSQL_PASSWORD: YCABtPLrKbCk
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       
@@ -20,9 +31,8 @@ jobs:
       run: docker build . --file Dockerfile --tag backend-server-container:$(date +%s)
       working-directory: backend
 
-    # - name: Build the Docker DB image
-    #   run: docker build . --file Dockerfile --tag mysqlr:$(date +%s)
-    #   working-directory: backend
+    - name: Wait for MySQL to start
+      run: sleep 20
 
     - name: Use Node.js
       uses: actions/setup-node@v3
@@ -37,6 +47,6 @@ jobs:
       run: npm run lint
       working-directory: backend
         
-    # - name: Test
-    #   run: npm test
-    #   working-directory: backend
+    - name: Test
+      run: npm test
+      working-directory: backend

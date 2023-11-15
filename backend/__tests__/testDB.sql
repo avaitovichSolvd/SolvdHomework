@@ -1,10 +1,5 @@
 CREATE DATABASE IF NOT EXISTS testDB;
 
-
-CREATE SCHEMA IF NOT EXISTS `testDB` DEFAULT CHARACTER SET utf8;
-
-USE `testDB`;
-
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(45) NOT NULL,
@@ -37,7 +32,6 @@ CREATE TABLE IF NOT EXISTS `favorites` (
   PRIMARY KEY (`favorites_id`)
 ) ENGINE = InnoDB;
 
-
 CREATE TABLE IF NOT EXISTS `calendar_events` (
   `event_id` INT AUTO_INCREMENT,
   `lawyer_id` INT NOT NULL,
@@ -48,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `calendar_events` (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   FOREIGN KEY (`lawyer_id`) REFERENCES `lawyer`(`lawyer_id`)
 ) ENGINE = InnoDB;
-
 
 CREATE TABLE IF NOT EXISTS `chat_messages` (
   `message_id` INT AUTO_INCREMENT,
@@ -62,14 +55,10 @@ CREATE TABLE IF NOT EXISTS `chat_messages` (
   FOREIGN KEY (`lawyer_id`) REFERENCES `lawyer`(`lawyer_id`)
 ) ENGINE = InnoDB;
 
-
-
-DELIMITER $$
 CREATE TRIGGER `before_insert_calendar_event` BEFORE INSERT ON `calendar_events` FOR EACH ROW
 BEGIN
   IF NEW.event_date < NOW() THEN
     SIGNAL SQLSTATE '45000'
     SET MESSAGE_TEXT = 'The event date cannot be later than the current date';
   END IF;
-END$$
-DELIMITER ;
+END$$;
