@@ -18,7 +18,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: YCABtPLrKbCk
           MYSQL_DATABASE: testDB
-          MYSQL_USER: root
           MYSQL_PASSWORD: YCABtPLrKbCk
         ports:
           - 3306:3306
