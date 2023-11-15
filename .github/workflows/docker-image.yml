@@ -13,7 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Dependencies
+      run: npm install
+
+    - name: Lint
+      run: npm run lint
+        
+    - name: Test
+      run: npm test
+      
     - uses: actions/checkout@v3
+    
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag backend-server-container:$(date +%s)
       working-directory: backend
