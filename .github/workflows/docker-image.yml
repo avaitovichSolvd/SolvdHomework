@@ -20,9 +20,9 @@ jobs:
       run: docker build . --file Dockerfile --tag backend-server-container:latest:$(date +%s)
       working-directory: backend
 
-    - name: Build the Docker DB image
-      run: docker build . --file Dockerfile --tag mysqlr:$(date +%s)
-      working-directory: backend
+    # - name: Build the Docker DB image
+    #   run: docker build . --file Dockerfile --tag mysqlr:$(date +%s)
+    #   working-directory: backend
 
     - name: Use Node.js
       uses: actions/setup-node@v3
