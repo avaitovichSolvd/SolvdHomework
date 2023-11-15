@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "set DB_HOST=localhost&& set DB_USER=root&& set DB_PASSWORD=YCABtPLrKbCk&& set DB_NAME=testDB&& jest",
-    "build": "npm install"
+    "test": "jest --coverage --runInBand --detectOpenHandles",
+    "build": "npm install",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "eslint": "^8.53.0",
     "jest": "^29.7.0",
     "supertest": "^6.3.3"
   }

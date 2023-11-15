@@ -1,14 +1,14 @@
 const userModel = require("../../models/userModel");
 
 const deleteUser = async (req, res) => {
+  const { user_id } = req.params;
+
+  if (!user_id) {
+    return res.status(400).json({ error: "User id must be provided" });
+  }
   try {
-    const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({ error: "User id must be provided" });
-    }
-
-    const result = await userModel.deleteUser(id);
+    const result = await userModel.deleteUser(user_id);
 
     if (result) {
       return res.status(200).json({ message: "User deleted successfully" });

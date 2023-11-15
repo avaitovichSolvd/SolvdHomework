@@ -19,8 +19,11 @@ const login = async (req, res) => {
     if (user.length === 1) {
       const userData = user[0];
       const payload = {
+        id: userData.id,
         first_name: userData.first_name,
         last_name: userData.last_name,
+        phone_number: userData.phone_number
+
       };
 
       const token = jwt.createToken(header, payload);

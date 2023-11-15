@@ -8,13 +8,13 @@ const addEvent = async (req, res) => {
       return res.status(400).json({ error: "All fields must be filled in" });
     }
 
-    await calendarModel.addEvent(
+    const result = await calendarModel.addEvent(
       lawyer_id,
       user_id,
       event_date,
       event_description
     );
-    res.status(201).json({ message: "Event created successfully" });
+    res.status(201).json({ message: "Event created successfully", result: result });
   } catch (error) {
     res
       .status(500)
