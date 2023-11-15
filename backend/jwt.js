@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const secretKey = process.env.SECRET_KEY;
+
 /* global process */
 /* global Buffer */
 
