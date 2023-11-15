@@ -6,9 +6,11 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: '*'
+    branches: 
+      - '*'
   pull_request:
-    branches: '*'
+    branches:
+      - '*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,6 +27,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Lint
         run: npm run lint
           
@@ -39,4 +49,3 @@ jobs:
       - name: Deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: ssh root@localhost 'cd /backend/server && git pull origin main && npm install && pm2 restart backend'
-
