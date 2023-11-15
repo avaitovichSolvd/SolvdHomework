@@ -5,7 +5,7 @@ ENV NODE_ENV production
 WORKDIR /backend
 
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 
 USER node
 
