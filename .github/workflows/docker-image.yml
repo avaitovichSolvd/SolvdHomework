@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag backend-server-container:latest:$(date +%s)
+      run: docker build . --file Dockerfile --tag backend-server-container:$(date +%s)
       working-directory: backend
 
     # - name: Build the Docker DB image
