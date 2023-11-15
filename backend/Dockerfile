@@ -8,7 +8,7 @@ COPY package*.json ./
 RUN npm install
 
 RUN apk update && \
-    apk install -y mysql-server
+    apk add mysql
 
 USER node
 
